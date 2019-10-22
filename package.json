@@ -1,0 +1,18 @@
+{
+  "name": "treelo_js",
+  "version": "1.0.0",
+  "description": "Treelo hierarchical organization task software",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Treelo",
+    "hierarchical",
+    "hierarchy",
+    "task",
+    "organization"
+  ],
+  "author": "Tucker Guen, Ben Baierl",
+  "license": "MIT"
+}
