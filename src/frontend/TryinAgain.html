@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <text>Treelo:</text>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <text>Collapsible Tree Example</text>
+
+    <style>
+        .node {
+            cursor: pointer;
+        }
+
+        .node circle {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 3px;
+        }
+
+        .node text {
+            font: 12px sans-serif;
+        }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        #main {
+            transition: margin-left .5s;
+            padding: 16px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+    </style>
+
+</head>
+<div id="main">
+    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Treelo Menu</span>
+</div>
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <br><button type="button" id="new-tree" onClick="displayTree()">Display Tree 2</button>
+    <br><input id="CreateTree2" type="button" value="" onclick="createTree(getData2());" />
+    <br><input id="SignOut" type="button" value="Sign Out" onclick="createNewTree(getData2());" />
+</div>
+<button type="button" id="delete-tree" onClick="deleteTree()">Delete Tree?</button>
+<button type="button" id="new-tree" onClick="displayTree()">Display Tree 2</button>
+
+<body>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <p id="modal-title"> test </p>
+                </div>
+                <p id="node-data"> test2
+                </p>
+                <div class="modal-footer">
+                    <button type="button" id="remove-node">Delete Card?</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+
+    <form>
+        Enter New Tree Root Node Information:
+        <div>
+            <label for="titleText">Card Title</label>
+            <input id="titleText" type="text" name="titleText">
+        </div>
+        <div>
+            <label for="description">Card Description</label>
+            <input id="description" type="textarea" rows="4" cols="10" name="description">
+        </div>
+        <div>
+            <br><input id="submit" type="button" value="submit" onclick="makeNewData()" />
+
+        </div>
+    </form>
+
+    <!-- load the d3.js library -->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    <script>
+
+        //NEW TREE
+        function makeNewData() {
+            var Title =
+                document.getElementById("titleText").value;
+            var Description =
+                document.getElementById("description").value;
+            if (Title != "" && Description != "") {
+                alert(Description)
+                var data = [{
+                    "name": Title,
+                    "parent": "null",
+                    "description": Description,
+                    "children": []
+                }]
+                displayTree(data)
+            }
+        }
+
+        // function addTree() {
+        //     var margin = { top: 20, right: 120, bottom: 20, left: 120 },
+        //         width = 960 - margin.right - margin.left,
+        //         height = 500 - margin.top - margin.bottom;
+
+        //     var i = 0;
+
+        //     var tree = d3.layout.tree()
+        //         .size([height, width]);
+
+        //     var diagonal = d3.svg.diagonal()
+        //         .projection(function (d) { return [d.x, d.y]; });
+
+        //     var svg = d3.select("body").append("svg")
+        //         .attr("width", width + margin.right + margin.left)
+        //         .attr("height", height + margin.top + margin.bottom)
+        //         .append("g")
+        //         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        //     root = treeData[0];
+
+        //     update(root);
+        // }
+
+        var treeData = [
+            {
+                "name": "Top Level",
+                "description": "Coolstuff1",
+                "parent": "null",
+                "children": [
+                    {
+                        "name": "Level 2: A",
+                        "description": "Coolstuff2",
+                        "parent": "Top Level",
+                        "children": [
+                            {
+                                "name": "Son of A",
+                                "description": "Coolstuff3",
+                                "parent": "Level 2: A"
+                            },
+                            {
+                                "name": "Daughter of A",
+                                "description": "Coolstuff4",
+                                "parent": "Level 2: A"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Level 2: B",
+                        "description": "Coolstuff5",
+                        "parent": "Top Level"
+                    }
+                ]
+            }
+        ];
+
+
+        var currentNode;
+
+        // var div = document.getElementsByClassName('node-data')[0],
+        // frag = document.createDocumentFragment(),
+        // data = treeData;
+        // data.forEach(function(v,i) {
+        //     frag.appendChild(document.createElement('h5')).innerHTML = v.name;
+        //     frag.appendChild(document.createElement('p')).innerHTML = "Description:\n" + v.description;
+        // });
+        // div.appendchild(frag);
+        // ************** Generate the tree diagram  *****************
+        var margin = { top: 20, right: 120, bottom: 20, left: 120 },
+            width = 960 - margin.right - margin.left,
+            height = 500 - margin.top - margin.bottom;
+
+        var i = 0;
+
+        var duration = 750;
+
+        var tree = d3.layout.tree()
+            .size([height, width]);
+
+        var diagonal = d3.svg.diagonal()
+            .projection(function (d) { return [d.x, d.y]; });
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.right + margin.left)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+        root = treeData[0];
+        root.x0 = height / 2;
+        root.y0 = 0;
+
+        update(root);
+
+        d3.select(self.frameElement).style("height", "500px");
+
+        function update(source) {
+
+            // Compute the new tree layout.
+            var nodes = tree.nodes(root).reverse(),
+                links = tree.links(nodes);
+
+            // Normalize for fixed-depth.
+            nodes.forEach(function (d) { d.y = d.depth * 100; });
+
+            // Declare the nodesâ€¦
+            var node = svg.selectAll("g.node")
+                .data(nodes, function (d) { return d.id || (d.id = ++i); });
+
+            // Enter the nodes.
+            var nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function (d) {
+                    return "translate(" + d.y + "," + d.x + ")";
+                })
+                .on("click", dblclick)
+                .on("dblclick", click);
+
+
+            nodeEnter.append("circle")
+                .attr("r", 10)
+                .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+            nodeEnter.append("text")
+                .attr("x", function (d) {
+                    return d.children || d._children ? -13 : 13;
+                })
+                .attr("dy", ".35em")
+                .attr("text-anchor", function (d) {
+                    return d.children || d._children ? "end" : "start";
+                })
+                .text(function (d) { return d.name; })
+                .style("fill-opacity", 1);
+
+            // Transition nodes to their new position.
+            var nodeUpdate = node.transition()
+                .duration(duration)
+                .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+            nodeUpdate.select("circle")
+                .attr("r", 10)
+                .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+            nodeUpdate.select("text")
+                .style("fill-opacity", 1);
+
+            // Transition exiting nodes to the parent's new position.
+            var nodeExit = node.exit().transition()
+                .duration(duration)
+                .attr("transform", function (d) { return "translate(" + source.x + "," + source.y + ")"; })
+                .remove();
+
+            nodeExit.select("circle")
+                .attr("r", 1e-6);
+
+            nodeExit.select("text")
+                .style("fill-opacity", 1e-6);
+
+
+            // Declare the linksâ€¦
+            var link = svg.selectAll("path.link")
+                .data(links, function (d) { return d.target.id; });
+
+            // Enter the links.
+            link.enter().insert("path", "g")
+                .attr("class", "link")
+                .attr("d", function (d) {
+                    var o = { x: source.x0, y: source.y0 };
+                    return diagonal({ source: o, target: o });
+                })
+            //.on("click", removeNode)
+
+
+            // Transition links to their new position.
+            link.transition()
+                .duration(duration)
+                .attr("d", diagonal);
+
+            // Transition exiting nodes to the parent's new position.
+            link.exit().transition()
+                .duration(duration)
+                .attr("d", function (d) {
+                    var o = { x: source.x, y: source.y };
+                    return diagonal({ source: o, target: o });
+                })
+                .remove();
+
+            // Stash the old positions for transition.
+            nodes.forEach(function (d) {
+                d.x0 = d.x;
+                d.y0 = d.y;
+            });
+
+
+        }
+
+        // function findDescription(data, nameToLookFor) {
+        //     var stack = [], node, ii;
+        //     stack.push(data[0]);
+
+        //     while (stack.length > 0) {
+        //         node = stack.pop();
+        //         if (node.name == nameToLookFor) {
+        //             return node.description;
+        //         } else if (node.children && node.children.length) {
+        //             for (ii = 0; ii < node.children.length; ii += 1) {
+        //                 stack.push(node.children[ii]);
+        //             }
+        //         }
+        //     }
+        //     return null;
+        // }
+
+        // function(){
+        //     trees = toBackend();
+        //     $.each(trees, function(i, tree){
+        //         title = tree.name;
+        //         $('#navbar').
+        //     });
+        // }
+
+        function click(d) {
+            //alert(d.name);
+            //var item = findDescription(treeData, d.name);
+            document.getElementById("node-data").innerHTML = "  Description:" + "<br>   " + d.description;
+            document.getElementById("modal-title").innerHTML = d.name;
+            currentNode = d;
+            $('#myModal').modal("toggle");
+        }
+
+        // Toggle children on click.
+        function dblclick(d) {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else {
+                d.children = d._children;
+                d._children = null;
+            }
+            update(d);
+        }
+
+        function removeNode(d) {
+            alert(currentNode)
+            //alert("made it here")
+            //this is the links target node which you want to remove
+            var target = currentNode;
+            //make new set of children
+            var children = [];
+            //iterate through the children 
+            target.parent.children.forEach(function (child) {
+                if (child.id != target.id) {
+                    //add to teh child list if target id is not same 
+                    //so that the node target is removed.
+                    children.push(child);
+                }
+            });
+            //set the target parent with new set of children sans the one which is removed
+            target.parent.children = children;
+            //redraw the parent since one of its children is removed
+            update(d.target.parent)
+        }
+
+        //NAVIGATION BAR
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+            document.getElementById("main").style.marginLeft = "250px";
+            document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+            document.body.style.backgroundColor = "white";
+        }
+
+        // function removeNode2(d) {
+        //     // var title = showDivText("modal-title")
+        //     // //alert(title);
+        //     // alert(treeData[0])
+        //     // alert(treeData[0]);
+        //     // update(root);
+        //     //alert(treeData.join("\n"));
+        //     //alert( $.toJSON(treeData) );
+        //     //alert(JSON.stringify(json_obj));
+        //     // currentNode.children = null;
+        //     // treeData.remove('a.name')
+        //     //alert(curentNode.parent)
+        //     // for(var i = 0; i < currentNode.parent.children.length; i++){
+        //     //     if(currentNode.parent.children[i].name == currentNode.name){
+        //     //         alert(currentNode.parent.children[i].name)
+        //     //         currentNode.parent.children[i] = null
+        //     //     }
+        //     // }
+        //     // where nodeObject is the javascript object for the node, it's probably called "d" in your function. 
+        //     alert(currentNode.name + "has been removed.");
+        //     d3.selectAll("links")
+        //         .filter(function (e) {
+        //             return (e.name === currentNode.name);
+        //         })
+        //         .remove();
+
+        //     // removeNode(d3.selectAll(".link")
+        //     //     .filter(function (e) {
+        //     //         return (e.target === currentNode);
+        //     //     }));
+        //     //alert(JSON.stringify(treeData));
+
+        //     //alert(JSON.stringify(treeData));
+        //     //update(currentNode.parent)
+        // }
+
+
+        function deleteTree(d) {
+            var treeData = [
+                    {
+                        "name": "Make a new Treelo Tree using the buttons below or open an existing tree with the Navigation Bar!"
+                    }];
+            root = treeData[0];
+            root.x0 = height / 2;
+            root.y0 = 0;
+            update(root);
+        }
+
+        function displayTree(data) {
+            if (data == null) {
+                var treeData = [
+                    {
+                        "name": "Something New",
+                        "description": "Coolstuff1",
+                        "parent": "null",
+                        "children": [
+                            {
+                                "name": "NewToo",
+                                "description": "Coolstuff2",
+                                "parent": "Top Level",
+                                "children": [
+                                    {
+                                        "name": "Son of A BItch",
+                                        "description": "Coolstuff3",
+                                        "parent": "Level 2: A"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ];
+            }
+            else {
+                treeData = data;
+            }
+
+            root = treeData[0];
+            root.x0 = height / 2;
+            root.y0 = 0;
+
+            update(root);
+
+            d3.select(self.frameElement).style("height", "500px");
+        }
+
+        function showDivText(ID) {
+            divObj = document.getElementById(ID);
+            if (divObj) {
+                if (divObj.textContent) {
+                    return divObj.textContent;
+                } else {
+                    return divObj.innerText;  //alert ( divObj.innerHTML );
+                }
+            }
+        }
+
+        function findAndRemove(array, property, value) {
+            array.forEach(function (result, index) {
+                if (result[property] === value) {
+                    array.splice(index, 1);
+                }
+            });
+        }
+
+        document.querySelector('#remove-node').addEventListener('click', removeNode);
+
+    </script>
+
+</body>
+
+</html>
