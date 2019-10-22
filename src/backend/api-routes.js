@@ -1,8 +1,26 @@
+// api-routes.js
+// Initialize express router
 let router = require('express').Router();
-router.get('/', function(req, res){
+// Set default API response
+router.get('/', function (req, res) {
     res.json({
-        status: 'API is working with nodemon',
-        message: 'Welcome to Treelo!!!'
+        status: 'API Its Working',
+        message: 'Welcome to Treelo',
     });
 });
+// Import tree controller
+var treeController = require('./treeController');
+// Tree routes
+router.route('/trees')
+    .get(treeController.index)
+    .post(treeController.new);
+
+router.route('/trees/:tree_id')
+    .get(treeController.view)
+    .patch(treeController.update)
+    .put(treeController.update)
+    .delete(treeController.delete);
+
+
+// Export API routes
 module.exports = router;
