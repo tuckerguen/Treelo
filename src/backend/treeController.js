@@ -20,11 +20,15 @@ exports.index = function (req, res) {
 // Handle create tree actions
 exports.new = function (req, res) {
     var tree = new Tree();
-    tree.name = req.body.name ? req.body.name : tree.name;
-    tree.gender = req.body.gender;
-    tree.email = req.body.email;
-    tree.phone = req.body.phone;
-// save the tree and check for errors
+    tree.title = req.body.title ? req.body.title : tree.title;
+    tree.description = req.body.description;
+    tree.dueDate = req.body.dueDate;
+    tree.owner = req.body.owner;
+    tree.sharedUsers = req.body.sharedUsers;
+    tree.isComplete = req.body.isComplete;
+    tree.isOverdue = req.body.isOverdue;
+    tree.children = req.body.children;
+    // save the tree and check for errors
     tree.save(function (err) {
         // Check for validation error
         if (err)
@@ -52,11 +56,15 @@ exports.update = function (req, res) {
     Tree.findById(req.params.tree_id, function (err, tree) {
         if (err)
             res.send(err);
-        tree.name = req.body.name ? req.body.name : tree.name;
-        tree.gender = req.body.gender;
-        tree.email = req.body.email;
-        tree.phone = req.body.phone;
-// save the tree and check for errors
+        tree.title = req.body.title ? req.body.title : tree.title;
+        tree.description = req.body.description;
+        tree.dueDate = req.body.dueDate;
+        tree.owner = req.body.owner;
+        tree.sharedUsers = req.body.sharedUsers;
+        tree.isComplete = req.body.isComplete;
+        tree.isOverdue = req.body.isOverdue;
+        tree.children = req.body.children;
+        // save the tree and check for errors
         tree.save(function (err) {
             if (err)
                 res.json(err);
@@ -67,6 +75,7 @@ exports.update = function (req, res) {
         });
     });
 };
+
 // Handle delete tree
 exports.delete = function (req, res) {
     Tree.remove({
