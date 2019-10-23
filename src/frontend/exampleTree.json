@@ -1,0 +1,29 @@
+{
+    "sharedUsers": [
+        "janedoe@gmail.com",
+        "benbaierl@case.edu"
+    ],
+    "children": [
+        {
+            "title": "Child1",
+            "description": "child 1 description",
+            "dueDate": "",
+            "owner": "johndoe@gmail.com",
+            "sharedUsers": [
+                "janedoe@gmail.com",
+                "benbaierl@case.edu"
+            ],
+            "isComplete": false,
+            "isOverdue": false,
+            "children": []
+        }
+    ],
+    "_id": "5daf8c0d73afd05a10c15331",
+    "dueDate": null,
+    "title": "Test title 2",
+    "description": "test description",
+    "owner": "johndoe@gmail.com",
+    "isComplete": false,
+    "isOverdue": false,
+    "__v": 0
+}
