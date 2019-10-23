@@ -88,37 +88,34 @@
 </div>
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <br><button type="button" id="new-tree" onClick="displayTree()">Display Tree 2</button>
-    <br><input id="CreateTree2" type="button" value="" onclick="createTree(getData2());" />
-    <br><input id="SignOut" type="button" value="Sign Out" onclick="createNewTree(getData2());" />
 </div>
-<button type="button" id="delete-tree" onClick="deleteTree()">Delete Tree?</button>
-<button type="button" id="new-tree" onClick="displayTree()">Display Tree 2</button>
+<button type="button" id="add-node-mode" onClick="setAddMode()">Add Node</button>
+<button type="button" id="remove-node" onClick="setDeleteMode()">Delete Card?</button>
 
 <body>
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
             <!-- Modal content-->
-            <div class="modal-content">
+            <form class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <p id="modal-title"> test </p>
+                    <p conteditable="true" id="modal-title"> test </p>
                 </div>
                 <p id="node-data"> test2
                 </p>
                 <div class="modal-footer">
-                    <button type="button" id="remove-node">Delete Card?</button>
-                </div>
-            </div>
+                    <button type="button" id="submit-changes">Save Changes</button>                </div>
+            </form>
 
         </div>
     </div>
 
     </div>
 
+
     <form>
-        Enter New Tree Root Node Information:
+        Enter New Root Node Information:
         <div>
             <label for="titleText">Card Title</label>
             <input id="titleText" type="text" name="titleText">
@@ -133,6 +130,7 @@
         </div>
     </form>
 
+
     <!-- load the d3.js library -->
     <script src="http://d3js.org/d3.v3.min.js"></script>
 
@@ -145,88 +143,207 @@
             var Description =
                 document.getElementById("description").value;
             if (Title != "" && Description != "") {
-                alert(Description)
                 var data = [{
-                    "name": Title,
-                    "parent": "null",
+                    "title": Title,
+                    "parent": null,
                     "description": Description,
-                    "children": []
+                    "children": [],
+                    "_id": Math.random() + ""
                 }]
-                displayTree(data)
+                treeData.push(data[0])
+                displayTree(data[0])
+                document.getElementById("mySidenav").innerHTML += "<br><button id = " + '"' + data[0]._id + '"' + "onClick = findTree()>" + data[0].title + "</button>";
+
             }
         }
 
-        // function addTree() {
-        //     var margin = { top: 20, right: 120, bottom: 20, left: 120 },
-        //         width = 960 - margin.right - margin.left,
-        //         height = 500 - margin.top - margin.bottom;
-
-        //     var i = 0;
-
-        //     var tree = d3.layout.tree()
-        //         .size([height, width]);
-
-        //     var diagonal = d3.svg.diagonal()
-        //         .projection(function (d) { return [d.x, d.y]; });
-
-        //     var svg = d3.select("body").append("svg")
-        //         .attr("width", width + margin.right + margin.left)
-        //         .attr("height", height + margin.top + margin.bottom)
-        //         .append("g")
-        //         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        //     root = treeData[0];
-
-        //     update(root);
-        // }
+        var globalTreeArray;
+        var nodeView = 'Collapse';
 
         var treeData = [
             {
-                "name": "Top Level",
-                "description": "Coolstuff1",
-                "parent": "null",
+                "sharedUsers": [
+                    "janedoe@gmail.com",
+                    "benbaierl@case.edu"
+                ],
                 "children": [
                     {
-                        "name": "Level 2: A",
-                        "description": "Coolstuff2",
-                        "parent": "Top Level",
-                        "children": [
-                            {
-                                "name": "Son of A",
-                                "description": "Coolstuff3",
-                                "parent": "Level 2: A"
-                            },
-                            {
-                                "name": "Daughter of A",
-                                "description": "Coolstuff4",
-                                "parent": "Level 2: A"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "Level 2: B",
-                        "description": "Coolstuff5",
-                        "parent": "Top Level"
+                        "title": "Child1",
+                        "description": "child 1 description",
+                        "dueDate": "",
+                        "owner": "johndoe@gmail.com",
+                        "sharedUsers": [
+                            "janedoe@gmail.com",
+                            "benbaierl@case.edu"
+                        ],
+                        "isComplete": false,
+                        "isOverdue": false,
+                        "children": []
                     }
-                ]
+                ],
+                "_id": "5daf8c0d73afd05a10c15331",
+                "dueDate": null,
+                "title": "Test title 1",
+                "description": "test description",
+                "owner": "johndoe@gmail.com",
+                "isComplete": false,
+                "isOverdue": false,
+                "__v": 0
+            },
+            {
+                "sharedUsers": [
+                    "janedoe@gmail.com",
+                    "benbaierl@case.edu"
+                ],
+                "children": [
+                    {
+                        "title": "Child1",
+                        "description": "child 2 description",
+                        "dueDate": "",
+                        "owner": "johndoe@gmail.com",
+                        "sharedUsers": [
+                            "janedoe@gmail.com",
+                            "benbaierl@case.edu"
+                        ],
+                        "isComplete": false,
+                        "isOverdue": false,
+                        "children": [{
+                            "sharedUsers": [
+                                "janedoe@gmail.com",
+                                "benbaierl@case.edu"
+                            ],
+                            "children": [
+                                {
+                                    "title": "Child1",
+                                    "description": "child 2 description",
+                                    "dueDate": "",
+                                    "owner": "johndoe@gmail.com",
+                                    "sharedUsers": [
+                                        "janedoe@gmail.com",
+                                        "benbaierl@case.edu"
+                                    ],
+                                    "isComplete": false,
+                                    "isOverdue": false,
+                                    "children": []
+                                },
+                                {
+                                    "sharedUsers": [
+                                        "janedoe@gmail.com",
+                                        "benbaierl@case.edu"
+                                    ],
+                                    "children": [
+                                        {
+                                            "title": "Child1",
+                                            "description": "child 2 description",
+                                            "dueDate": "",
+                                            "owner": "johndoe@gmail.com",
+                                            "sharedUsers": [
+                                                "janedoe@gmail.com",
+                                                "benbaierl@case.edu"
+                                            ],
+                                            "isComplete": false,
+                                            "isOverdue": false,
+                                            "children": []
+                                        }
+                                    ],
+                                    "_id": "5daf8c0d73afd051",
+                                    "dueDate": null,
+                                    "title": "Test title 2",
+                                    "description": "test description",
+                                    "owner": "johndoe@gmail.com",
+                                    "isComplete": false,
+                                    "isOverdue": false,
+                                    "__v": 0
+                                }
+                            ],
+                            "_id": "5daf8c0d73afd051",
+                            "dueDate": null,
+                            "title": "Test title 2",
+                            "description": "test description",
+                            "owner": "johndoe@gmail.com",
+                            "isComplete": false,
+                            "isOverdue": false,
+                            "__v": 0
+                        }]
+                    }
+                ],
+                "_id": "5daf8c0d73afd051",
+                "dueDate": null,
+                "title": "Test title 2",
+                "description": "test description",
+                "owner": "johndoe@gmail.com",
+                "isComplete": false,
+                "isOverdue": false,
+                "__v": 0
+            },
+            {
+                "sharedUsers": [
+                    "janedoe@gmail.com",
+                    "benbaierl@case.edu"
+                ],
+                "children": [
+                    {
+                        "title": "Child1",
+                        "description": "child 1 description",
+                        "dueDate": "",
+                        "owner": "johndoe@gmail.com",
+                        "sharedUsers": [
+                            "janedoe@gmail.com",
+                            "benbaierl@case.edu"
+                        ],
+                        "isComplete": false,
+                        "isOverdue": false,
+                        "children": [{
+                            "title": "Child1",
+                            "description": "child 1 description",
+                            "dueDate": "",
+                            "owner": "johndoe@gmail.com",
+                            "sharedUsers": [
+                                "janedoe@gmail.com",
+                                "benbaierl@case.edu"
+                            ],
+                            "isComplete": false,
+                            "isOverdue": false,
+                            "children": []
+                        }]
+                    }
+                ],
+                "_id": "5daf8c0d73afd05a10c15331asdfsadf",
+                "dueDate": null,
+                "title": "Test title 3",
+                "description": "test description",
+                "owner": "johndoe@gmail.com",
+                "isComplete": false,
+                "isOverdue": false,
+                "__v": 0
             }
         ];
 
+        var foundTreeForRender;
+
+        function findTree(d) {
+            treeData.forEach(findMatchingID)
+            displayTree(foundTreeForRender);
+        }
+
+        function findMatchingID(item, index) {
+            if (item._id == event.target.id) {
+                foundTreeForRender = item;
+            }
+        }
+
+        treeData.forEach(myFunction);
+
+        function myFunction(item, index) {
+            document.getElementById("mySidenav").innerHTML += "<br><button id = " + '"' + item._id + '"' + "onClick = findTree()>" + item.title + "</button>";
+        }
 
         var currentNode;
 
-        // var div = document.getElementsByClassName('node-data')[0],
-        // frag = document.createDocumentFragment(),
-        // data = treeData;
-        // data.forEach(function(v,i) {
-        //     frag.appendChild(document.createElement('h5')).innerHTML = v.name;
-        //     frag.appendChild(document.createElement('p')).innerHTML = "Description:\n" + v.description;
-        // });
-        // div.appendchild(frag);
         // ************** Generate the tree diagram  *****************
         var margin = { top: 20, right: 120, bottom: 20, left: 120 },
-            width = 960 - margin.right - margin.left,
-            height = 500 - margin.top - margin.bottom;
+            width = 1000 - margin.right - margin.left,
+            height = 1000 - margin.top - margin.bottom;
 
         var i = 0;
 
@@ -286,7 +403,7 @@
                 .attr("text-anchor", function (d) {
                     return d.children || d._children ? "end" : "start";
                 })
-                .text(function (d) { return d.name; })
+                .text(function (d) { return d.title; })
                 .style("fill-opacity", 1);
 
             // Transition nodes to their new position.
@@ -325,8 +442,6 @@
                     var o = { x: source.x0, y: source.y0 };
                     return diagonal({ source: o, target: o });
                 })
-            //.on("click", removeNode)
-
 
             // Transition links to their new position.
             link.transition()
@@ -351,54 +466,59 @@
 
         }
 
-        // function findDescription(data, nameToLookFor) {
-        //     var stack = [], node, ii;
-        //     stack.push(data[0]);
-
-        //     while (stack.length > 0) {
-        //         node = stack.pop();
-        //         if (node.name == nameToLookFor) {
-        //             return node.description;
-        //         } else if (node.children && node.children.length) {
-        //             for (ii = 0; ii < node.children.length; ii += 1) {
-        //                 stack.push(node.children[ii]);
-        //             }
-        //         }
-        //     }
-        //     return null;
-        // }
-
-        // function(){
-        //     trees = toBackend();
-        //     $.each(trees, function(i, tree){
-        //         title = tree.name;
-        //         $('#navbar').
-        //     });
-        // }
-
         function click(d) {
             //alert(d.name);
             //var item = findDescription(treeData, d.name);
-            document.getElementById("node-data").innerHTML = "  Description:" + "<br>   " + d.description;
-            document.getElementById("modal-title").innerHTML = d.name;
+            document.getElementById("node-data").innerHTML = "  Description:<br/>   " + d.description;
+            document.getElementById("modal-title").innerHTML = d.title;
             currentNode = d;
             $('#myModal').modal("toggle");
         }
 
         // Toggle children on click.
         function dblclick(d) {
-            if (d.children) {
-                d._children = d.children;
-                d.children = null;
-            } else {
-                d.children = d._children;
-                d._children = null;
+            if (nodeView === 'Collapse') {
+                if (d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                } else {
+                    d.children = d._children;
+                    d._children = null;
+                }
+                update(d);
             }
-            update(d);
+            else if(nodeView === 'Add'){
+                var newChild = {
+                    "title": "New Node",
+                    "description": "Enter Description Here",
+                    "parent": d.title,
+                    "children": [],
+                    "_id": Math.random() + ""
+                }
+                if(d.children == null){
+                    newchildren = [];
+                    d.children = newchildren;
+                }
+                d.children.push(newChild)
+                nodeView = 'Collapse';
+                update(d);
+            }
+            else if(nodeView === 'Delete'){
+               // alert('made it here')
+                currentNode = d;
+                removeNode();
+                nodeView = 'Collapse';
+            }
         }
 
         function removeNode(d) {
-            alert(currentNode)
+            if(currentNode.parent == null){
+                deleteTree()
+                alert(currentNode.parent.title)
+                $("#" + currentNode._id).hide();
+                //update info for removing Tree
+            }
+           // alert('Deleted ' + currentNode.title)
             //alert("made it here")
             //this is the links target node which you want to remove
             var target = currentNode;
@@ -412,10 +532,11 @@
                     children.push(child);
                 }
             });
+            alert(target.parent.title)
             //set the target parent with new set of children sans the one which is removed
             target.parent.children = children;
             //redraw the parent since one of its children is removed
-            update(d.target.parent)
+            update(target.parent)
         }
 
         //NAVIGATION BAR
@@ -431,48 +552,12 @@
             document.body.style.backgroundColor = "white";
         }
 
-        // function removeNode2(d) {
-        //     // var title = showDivText("modal-title")
-        //     // //alert(title);
-        //     // alert(treeData[0])
-        //     // alert(treeData[0]);
-        //     // update(root);
-        //     //alert(treeData.join("\n"));
-        //     //alert( $.toJSON(treeData) );
-        //     //alert(JSON.stringify(json_obj));
-        //     // currentNode.children = null;
-        //     // treeData.remove('a.name')
-        //     //alert(curentNode.parent)
-        //     // for(var i = 0; i < currentNode.parent.children.length; i++){
-        //     //     if(currentNode.parent.children[i].name == currentNode.name){
-        //     //         alert(currentNode.parent.children[i].name)
-        //     //         currentNode.parent.children[i] = null
-        //     //     }
-        //     // }
-        //     // where nodeObject is the javascript object for the node, it's probably called "d" in your function. 
-        //     alert(currentNode.name + "has been removed.");
-        //     d3.selectAll("links")
-        //         .filter(function (e) {
-        //             return (e.name === currentNode.name);
-        //         })
-        //         .remove();
-
-        //     // removeNode(d3.selectAll(".link")
-        //     //     .filter(function (e) {
-        //     //         return (e.target === currentNode);
-        //     //     }));
-        //     //alert(JSON.stringify(treeData));
-
-        //     //alert(JSON.stringify(treeData));
-        //     //update(currentNode.parent)
-        // }
-
 
         function deleteTree(d) {
             var treeData = [
-                    {
-                        "name": "Make a new Treelo Tree using the buttons below or open an existing tree with the Navigation Bar!"
-                    }];
+                {
+                    "title": "Make a new Treelo Tree using the buttons below or open an existing tree with the Navigation Bar!"
+                }];
             root = treeData[0];
             root.x0 = height / 2;
             root.y0 = 0;
@@ -480,34 +565,7 @@
         }
 
         function displayTree(data) {
-            if (data == null) {
-                var treeData = [
-                    {
-                        "name": "Something New",
-                        "description": "Coolstuff1",
-                        "parent": "null",
-                        "children": [
-                            {
-                                "name": "NewToo",
-                                "description": "Coolstuff2",
-                                "parent": "Top Level",
-                                "children": [
-                                    {
-                                        "name": "Son of A BItch",
-                                        "description": "Coolstuff3",
-                                        "parent": "Level 2: A"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ];
-            }
-            else {
-                treeData = data;
-            }
-
-            root = treeData[0];
+            root = data;
             root.x0 = height / 2;
             root.y0 = 0;
 
@@ -535,7 +593,27 @@
             });
         }
 
-        document.querySelector('#remove-node').addEventListener('click', removeNode);
+        function updateNodeInfo(d) {
+            alert('here I am')
+            var Title =
+                document.getElementById("modal-title").value;
+            var Description =
+                document.getElementById("modal-data").value;
+        }
+        
+        function setDeleteMode(){
+            nodeView = 'Delete';
+            alert("You have netered delete node mode. Click a node to delete it and its children\n**Warning Deletion is perminant**")
+        }
+
+        function setAddMode(d){
+            nodeView = 'Add';
+            alert("You have entered add node mode. Click a node to add a child")
+        }
+
+
+        //document.querySelector('#remove-node').addEventListener('click', removeNode);
+        document.querySelector('#save-changes').addEventListener('click', updateNodeInfo);
 
     </script>
 
