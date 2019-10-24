@@ -1,6 +1,6 @@
 // treeController.js
 // Import tree model
-Tree = require('./treeModel');
+Tree = require('../models/treeModel');
 // Handle index actions
 exports.index = function (req, res) {
     Tree.get(function (err, trees) {

@@ -9,7 +9,8 @@ router.get('/', function (req, res) {
     });
 });
 // Import tree controller
-var treeController = require('./treeController');
+var treeController = require('../controllers/treeController');
+var userController = require('../controllers/userController')
 // Tree routes
 router.route('/trees')
     .get(treeController.index)
@@ -21,6 +22,11 @@ router.route('/trees/:tree_id')
     .put(treeController.update)
     .delete(treeController.delete);
 
+router.route('/newUser')
+    .post(userController.new);
+
+router.route('/login')
+    .post(userController.view);
 
 // Export API routes
 module.exports = router;

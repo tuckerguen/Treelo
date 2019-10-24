@@ -2,7 +2,7 @@
 var mongoose = require('mongoose');
 // Setup schema
 
-var Node = mongoose.Schema({
+var NodeSchema = mongoose.Schema({
     title: {
         type: String,
         required: true
@@ -23,7 +23,7 @@ var Node = mongoose.Schema({
 });
 
 // Export Tree model
-var treeModel = module.exports = mongoose.model('Tree', Node);
+var Tree = module.exports = mongoose.model('Tree', NodeSchema);
 module.exports.get = function (callback, limit) {
-    treeModel.find(callback).limit(limit);
+    Tree.find(callback).limit(limit);
 }
