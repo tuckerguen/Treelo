@@ -305,8 +305,21 @@ function update(source) {
             return "translate(" + d.y + "," + d.x + ")";
         })
         .on("click", dblclick)
-        .on("dblclick", click);
-
+        .on("dblclick", click)
+        .on("mouseover", function (d) {
+            var g = d3.select(this); // The node
+            // The class is used to remove the additional text later
+          //  alert(d.title)
+            var info = g.append('text')
+                .classed('info', true)
+                .attr('x', 20)
+                .attr('y', 10)
+                .text(d.title);
+        })
+        .on("mouseout", function () {
+            // Remove the info text on mouse out.
+            d3.select(this).select('text.info').remove()
+        });
 
     nodeEnter.append("circle")
         .attr("r", 10)
