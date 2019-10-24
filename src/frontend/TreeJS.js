@@ -309,7 +309,7 @@ function update(source) {
         .on("mouseover", function (d) {
             var g = d3.select(this); // The node
             // The class is used to remove the additional text later
-          //  alert(d.title)
+            //  alert(d.title)
             var info = g.append('text')
                 .classed('info', true)
                 .attr('x', 20)
@@ -324,6 +324,7 @@ function update(source) {
     nodeEnter.append("circle")
         .attr("r", 10)
         .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+
     nodeEnter.append("text")
         .attr("y", function (d) {
             return d.children || d._children ? -18 : 18;
