@@ -24,9 +24,11 @@ var port = process.env.PORT || 8080;
 app.get('/', (req, res) => res.send('Treelo be working'));
 
 // Use Api routes in the App
-app.use('/api', apiRoutes);
+app.use('/', apiRoutes);
 // Launch app to listen to specified port
 app.listen(port, function () {
     console.log("Running Treelo on port " + port);
 });
+
+module.exports = app;
 

@@ -1,5 +1,6 @@
 // treeModel.js
 var mongoose = require('mongoose');
+var fkHelper = require('./fkHelper');
 // Setup schema
 
 var NodeSchema = mongoose.Schema({
@@ -13,10 +14,29 @@ var NodeSchema = mongoose.Schema({
         default: Date.now 
     },
     owner: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        validate: {
+            isAsync: true,
+            validator: function(v){
+                return fkHelper(mongoose.model('User'), v);
+            },
+            message: "User doesn't exist"
+        },
         required: true
     },
-    sharedUsers: [String],
+    sharedUsers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        validate: {
+            isAsync: true,
+            validator: function(v){
+                return fkHelper(mongoose.model('User'), v);
+            },
+            message: "User doesn't exist"
+        },
+        required: true
+    }],
     isComplete: Boolean,
     isOverdue: Boolean,
     children: [this]

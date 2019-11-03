@@ -1,24 +1,53 @@
 // treeController.js
+
+exports.view = function(req, res){
+    console.log('Received request for tree page');
+    res.sendFile('/treeView.html', {root: 'D:/$Programming/projects/treelo_js/src/views/'});
+}
+
 // Import tree model
 Tree = require('../models/treeModel');
+
+// Get trees for user
+exports.getUserTrees = async function(req, res){
+    Tree.find(
+        { _id: req.params.userId }, 
+        { runValidators: true },
+        function(err, trees){
+            if (err) {
+                res.json({
+                    status: 'error',
+                    message: err,
+                });
+            }
+            res.json({
+                status: 'success',
+                message: 'Trees retrieved successfully',
+                data: trees
+            });
+        }
+    );
+}
+
 // Handle index actions
-exports.index = function (req, res) {
+exports.index = async function (req, res) {
     Tree.get(function (err, trees) {
         if (err) {
             res.json({
-                status: "error",
+                status: 'error',
                 message: err,
             });
         }
         res.json({
-            status: "success",
-            message: "Trees retrieved successfully",
+            status: 'success',
+            message: 'Trees retrieved successfully',
             data: trees
         });
     });
 };
+
 // Handle create tree actions
-exports.new = function (req, res) {
+exports.new = async function (req, res) {
     var tree = new Tree();
     tree.title = req.body.title ? req.body.title : tree.title;
     tree.description = req.body.description;
@@ -40,8 +69,9 @@ exports.new = function (req, res) {
             });
     });
 };
+
 // Handle view tree info
-exports.view = function (req, res) {
+exports.data = async function (req, res) {
     Tree.findById(req.params.tree_id, function (err, tree) {
         if (err)
             res.send(err);
@@ -51,8 +81,9 @@ exports.view = function (req, res) {
         });
     });
 };
+
 // Handle update tree info
-exports.update = function (req, res) {
+exports.update = async function (req, res) {
     Tree.findById(req.params.tree_id, function (err, tree) {
         if (err)
             res.send(err);
@@ -77,7 +108,7 @@ exports.update = function (req, res) {
 };
 
 // Handle delete tree
-exports.delete = function (req, res) {
+exports.delete = async function (req, res) {
     Tree.remove({
         _id: req.params.tree_id
     }, function (err, tree) {
