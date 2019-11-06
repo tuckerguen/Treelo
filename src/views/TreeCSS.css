@@ -1,0 +1,397 @@
+#tree-div{
+    width: 100%;
+    height: 760px;
+    border:1px solid;
+    /* padding-right:15px; */
+    /* right:10px; */
+}
+
+#submit:hover{
+    background-color: lightgreen;
+}
+
+#cancel:hover{
+    background-color: red;
+}
+
+
+
+#card-preview{
+    position: fixed;
+    bottom: 0; right: 0px;
+    outline: thick solid black;
+    height: 15%;
+    width: 100%;
+}
+
+/* .right-bar {
+    position:fixed;
+    right: 0; top: 74px; bottom: 0;
+    width: 250px;
+    border: 1px solid;
+    height: 100%;
+} */
+svg{
+    overflow: visible;
+    width: 100%;
+    height: 100%;
+}
+.node {
+    cursor: pointer;
+}
+
+.node circle {
+    fill: #fff;
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.node text {
+    font: 12px sans-serif;
+}
+
+.right-bar:hover {
+    background-color: gray;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+#modal-description{
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.sidenav button{
+    display: 'block';
+    width: 200px;
+    color: black;
+    background-color: white;
+    border-radius: 10%;
+}
+
+.sidenav button:hover{
+    background-color: lightgreen;
+    outline: white;
+    cursor: pointer;
+    border-left: 4px solid black;
+    border-right: 4px solid black;
+}
+
+
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+
+#main2 {
+    transition: margin-right .5s;
+    position: absolute;
+    left: 90%;
+    top: 2%;
+}
+
+/* @media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+        font-size: 18px;
+    }
+} */
+
+#context-menu{
+    width: auto;
+    height: auto;
+    box-shadow: 0 0 20px 0 gray;
+    position: absolute;
+    display: none;
+}
+
+#context-menu ul{
+    padding: 0px 0px 0px 0px;
+}
+
+#context-menu ul button{
+    padding: 10px 5px 10px 5px;
+    text-align: center;
+    width: 95px;
+    height:auto;
+    background: white;
+    border:none;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+#context-menu ul #add-node-mode:hover{
+    background: lightgreen;
+}
+
+#context-menu ul #share-with-mode:hover{
+    background: lightgreen;
+}
+
+#context-menu ul #share-tree:hover{
+    background: green;
+}
+
+#context-menu ul #remove-node:hover{
+    background: rgb(206, 71, 71);
+}
+
+#context-menu ul #focus-node:hover{
+    background: rgb(228, 176, 81);
+}
+
+#context-menu ul #return-focus{
+    background: orange;
+}
+
+#context-menu ul button:hover{
+    background: lightgray;
+    outline: white;
+    cursor: pointer;
+    border-left: 4px solid black;
+ 
+}
+
+#create-tree{
+    position: absolute;
+    left: 83%;
+    top: 2.8%;
+    
+}
+
+#create-tree:hover{
+    background: lightgreen;
+}
+  
+.newtreeform{
+    position: absolute;
+    display: none;
+    width: auto;
+    height: auto;
+}
+
+.sharetreeform{
+    position: absolute;
+    display: none;
+    width: auto;
+    height: auto;
+}
+
+
+  .sideshare {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+  .sideshare a {
+    padding: 8px 32px 8px 8px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    right: 0;
+}
+
+.sideshare a:hover {
+    color: #f1f1f1;
+}
+
+.sideshare .closebtn {
+    position: absolute;
+    top: 0;
+    left: 25px;
+    font-size: 36px;
+    margin-right: 50px;
+}
+
+.sideshare button{
+    display: inline-block;
+    width: 200px;
+    color: black;
+    background-color: white;
+    border-radius: 10%;
+}
+
+#shareFooter{
+    position: absolute;
+    top: 5px;
+    right: 25px;
+    font-size: 10px;
+}
+
+#return{
+    height: auto;
+    width: 100px
+}
+
+#return:hover{
+    background-color: gold;
+}
+
+
+.sideshare button:hover{
+    background-color: lightgreen;
+    outline: white;
+    cursor: pointer;
+    border-left: 4px solid black;
+    border-right: 4px solid black;
+}
+
+#duedate{
+position: absolute;
+right: 10px;
+top: 6%;
+}
+
+#description-span{
+    resize:none;
+    position: relative;
+    width: 90%;
+    height: 500px;
+    left: 5%;
+}
+
+#desc-label{
+    position: relative;
+    left:2%;
+}
+
+#members{
+    position: relative;
+}
+
+/* #myModal{
+    position: absolut;
+    height: 1000px;
+} */
+
+@keyframes addblink{
+    0%{
+        /* opacity: 1; */
+        r: 10;
+    }
+    25%{
+        /* opacity: 0; */
+        r:15;
+    }
+    50%{
+        /* opacity: 1; */
+        r:10;
+        fill: green;
+    }
+    75%{
+        /* opacity: 0; */
+        r:15
+    }
+    100%{
+        /* opacity: 1; */
+        r:10
+    }
+}
+
+@keyframes doneblink{
+    0%{
+        opacity: 1;
+        r: 10;
+    }
+    25%{
+        opacity: .75;
+        r:15;
+    }
+    50%{
+        opacity: 1;
+        r:10;
+    }
+    75%{
+        opacity: .75;
+        r:15
+    }
+    100%{
+        opacity: 1;
+        r:10;
+        fill:lightgreen;
+    }
+}
+
+@keyframes focusblink{
+    0%{
+        /* opacity: 1; */
+        r: 10;
+        /* fill: white; */
+    }
+    25%{
+        /* opacity: 0; */
+        r:15;
+        /* fill: white; */
+    }
+    50%{
+        opacity: 1;
+        r:10;
+        fill: rgb(228, 176, 81);
+        /* fill: rgb(228, 176, 81); */
+        
+
+    }
+    75%{
+        /* opacity: 0; */
+        r:15;
+        /* fill:white; */
+        /* fill: white; */
+    }
+    100%{
+        /* opacity: 1; */
+        r:10;
+        }
+}
