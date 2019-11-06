@@ -1,28 +1,27 @@
+//Required Modules
 const express = require('express');
-
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const auth = require("../middleware/auth.js");
-const tree = require("../middleware/tree.js");
-const app = express();
-
 const path = require('path');
 const expressSession = require('express-session');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 
+//Middleware
+const auth = require("../middleware/auth.js");
+const tree = require("../middleware/tree.js");
+const app = express();
+
+
 require('dotenv').config();
-
-const authRouter = require('../middleware/auth');
-
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
+
+//DB Setup
 mongoose.connect('mongodb://localhost/treelo', { useNewUrlParser: true});
-
 var db = mongoose.connection;
-
+const mongoose = require('mongoose');
 if(!db)
     console.log("Error connecting db")
 else
@@ -31,6 +30,7 @@ else
 // Setup  port
 var port = process.env.PORT || 8080;
 
+//Configure sessions
 const session = {
     secret: "J72pYlQ7t#2Hw!n6dAK@n*Ppyn1EM6#2m",
     cookie: {},
@@ -41,12 +41,10 @@ const session = {
 if(app.get('env') === 'production'){
     session.cookie.secure = true;
 }
-
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession(session));
 
+//Configure Auth0 & Passport
 const strategy = new Auth0Strategy(
     {
       domain: process.env.AUTH0_DOMAIN,
