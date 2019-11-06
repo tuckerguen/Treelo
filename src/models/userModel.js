@@ -2,16 +2,9 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
-const JWT_KEY = 'DOOFALICIOUSBABY';
+const jwt_key = process.env.JWT_KEY;
 
 var UserSchema = new mongoose.Schema({
-    username:{
-        type: String,
-        unique: true,
-        required: true,
-        trim: true
-    },
     email: {
         type: String,
         unique: true,
@@ -49,11 +42,9 @@ UserSchema.pre('save', async function (next){
 UserSchema.methods.generateAuthToken = async function() {
     //Create auth token
     const user = this;
-    const token = jwt.sign({_id: user._id}, JWT_KEY);
+    const token = jwt.sign({_id: user._id}, jwt_key);
     user.tokens = user.tokens.concat({token});
-    console.log(user.tokens);
     await user.save();
-    console.log('User saved');
     return token;
 }
 
