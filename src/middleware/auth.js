@@ -13,7 +13,7 @@ require("dotenv").config();
 /**
  * Routes Definitions
  */
-const redirect = '/home.html';
+const redirect = '/';
 
 router.get(
     '/login', 
