@@ -5,10 +5,12 @@ const path = require('path');
 const expressSession = require('express-session');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
+const mongoose = require('mongoose');
 
 //Middleware
-const auth = require("../middleware/auth.js");
-const tree = require("../middleware/tree.js");
+const secure = require('./middleware/secure');
+const auth = require("./middleware/auth");
+const tree = require("./middleware/tree");
 const app = express();
 
 
@@ -21,7 +23,6 @@ app.use(bodyParser.json());
 //DB Setup
 mongoose.connect('mongodb://localhost/treelo', { useNewUrlParser: true});
 var db = mongoose.connection;
-const mongoose = require('mongoose');
 if(!db)
     console.log("Error connecting db")
 else
@@ -41,7 +42,7 @@ const session = {
 if(app.get('env') === 'production'){
     session.cookie.secure = true;
 }
-app.set('views', path.join(__dirname, 'views'));
+
 app.use(expressSession(session));
 
 //Configure Auth0 & Passport
@@ -81,13 +82,12 @@ app.use((req, res, next) => {
 app.get(
     '/',
     (req, res) => {
-        res.sendFile('home.html', {root: 'D:/$Programming/projects/treelo_js/src/views'});
+        res.sendFile('/home.html', {root: 'D:/$Programming/projects/treelo_js/src/views'});
     }
 );
 
 app.use('/', auth);
-app.use('/tree', tree);
-app.use(express.static(path.join(__dirname + '/../views')));
+app.use('/trees', tree);
 
 // Launch app to listen to specified port
 app.listen(port, function () {

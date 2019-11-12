@@ -1,9 +1,31 @@
 // treeController.js
 const express = require('express');
+const secure = require('./secure');
 const router = express.Router();
 
 router.get(
     '/',
+    secure.secured,
+    (req, res) => {
+        console.log('Received request for tree page');
+        res.sendFile('/treeView.html', {root: 'D:/$Programming/projects/treelo_js/src/views/'});
+    }
+);
+
+router.get(
+    "/user", 
+    secure.secured, 
+    (req, res, next) => {
+        const { _raw, _json, ...userProfile } = req.user;
+        res.render("user", {
+            title: "Profile",
+            userProfile: userProfile
+        });
+});
+
+router.get(
+    '/treeView.html',
+    secure.secured,
     (req, res) => {
         console.log('Received request for tree page');
         res.sendFile('/treeView.html', {root: 'D:/$Programming/projects/treelo_js/src/views/'});
@@ -15,7 +37,8 @@ Tree = require('../models/treeModel');
 
 // Get trees for user
 router.get(
-    '/trees/:userId',
+    '/:userId',
+    secure.secured,
     (req, res) => {
         Tree.find(
             { _id: req.params.userId }, 
@@ -37,29 +60,10 @@ router.get(
     }
 );
 
-// Handle index actions
-router.get(
-    '/trees/:userId/:treeId',
-    (req, res) => {
-        Tree.get(function (err, trees) {
-            if (err) {
-                res.json({
-                    status: 'error',
-                    message: err,
-                });
-            }
-            res.json({
-                status: 'success',
-                message: 'Trees retrieved successfully',
-                data: trees
-            });
-        });
-    }
-);
-
 // Handle create tree actions
 router.post(
-    '/trees/:userId',
+    '/:userId',
+    secure.secured,
     (req, res) => {
         var tree = new Tree();
         tree.title = req.body.title ? req.body.title : tree.title;
@@ -84,21 +88,31 @@ router.post(
     }
 );
 
-// Handle view tree info
-exports.data = async function (req, res) {
-    Tree.findById(req.params.tree_id, function (err, tree) {
-        if (err)
-            res.send(err);
-        res.json({
-            message: 'Tree details loading..',
-            data: tree
+// Handle index actions
+router.get(
+    '/:userId/:treeId',
+    secure.secured,
+    (req, res) => {
+        Tree.get(function (err, trees) {
+            if (err) {
+                res.json({
+                    status: 'error',
+                    message: err,
+                });
+            }
+            res.json({
+                status: 'success',
+                message: 'Trees retrieved successfully',
+                data: trees
+            });
         });
-    });
-};
+    }
+);
 
 // Handle update tree info
 router.put(
-    '/trees/:treeId',
+    '/:userId/:treeId',
+    secure.secured,
     (req, res) => {
         Tree.findById(req.params.tree_id, function (err, tree) {
             if (err)
@@ -126,7 +140,8 @@ router.put(
 
 // Handle delete tree
 router.delete(
-    '/trees/:treeId',
+    '/:userId/:treeId',
+    secure.secured,
     (req, res) => {
         Tree.remove({
             _id: req.params.tree_id
@@ -140,5 +155,17 @@ router.delete(
         });
     }
 );
+
+// Handle view tree info
+// exports.data = async function (req, res) {
+//     Tree.findById(req.params.tree_id, function (err, tree) {
+//         if (err)
+//             res.send(err);
+//         res.json({
+//             message: 'Tree details loading..',
+//             data: tree
+//         });
+//     });
+// };
 
 module.exports = router;

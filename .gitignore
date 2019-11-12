@@ -2,3 +2,4 @@ node_modules
 src/.env
 src/.eslintrc
 src/auth0login.txt
+src/views/user.pug

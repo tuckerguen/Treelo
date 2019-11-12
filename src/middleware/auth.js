@@ -30,18 +30,20 @@ router.get(
     (req, res, next) => {
         passport.authenticate("auth0", (err, user, info) => {
             if (err) {
-            return next(err);
-            }
-            if (!user) {
-            return res.redirect("/login");
-            }
-            req.logIn(user, (err) => {
-            if (err) {
                 return next(err);
             }
-            const returnTo = req.session.returnTo;
-            delete req.session.returnTo;
-            res.redirect(returnTo || redirect);
+            if (!user) {
+                //Redirect to home page if not logged in
+                return res.redirect("/");
+            }
+            req.logIn(user, (err) => {
+                if (err) {
+                    return next(err);
+                }
+                const returnTo = req.session.returnTo;
+                delete req.session.returnTo;
+                //Redirect to tree home on login
+                res.redirect(returnTo || '/treeView.html');
             });
         })(req, res, next);
     }
@@ -64,14 +66,14 @@ router.get(
         }
     
         const logoutURL = new URL(
-        util.format("https://%s/logout", process.env.AUTH0_DOMAIN)
+            util.format("https://%s/logout", process.env.AUTH0_DOMAIN)
         );
         const searchString = querystring.stringify({
-        client_id: process.env.AUTH0_CLIENT_ID,
-        returnTo: returnTo
+            client_id: process.env.AUTH0_CLIENT_ID,
+            returnTo: returnTo
         });
+        
         logoutURL.search = searchString;
-    
         res.redirect(logoutURL);
     }
 );
