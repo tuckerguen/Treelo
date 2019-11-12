@@ -8,7 +8,7 @@ router.get(
     secure.secured,
     (req, res) => {
         console.log('Received request for tree page');
-        res.sendFile('/treeView.html', {root: 'D:/$Programming/projects/treelo_js/src/views/'});
+        res.sendFile('tree.html', {root: 'D:/$Programming/projects/treelo_js/src/views/'});
     }
 );
 
@@ -24,11 +24,11 @@ router.get(
 });
 
 router.get(
-    '/treeView.html',
+    '/trees',
     secure.secured,
     (req, res) => {
         console.log('Received request for tree page');
-        res.sendFile('/treeView.html', {root: 'D:/$Programming/projects/treelo_js/src/views/'});
+        res.sendFile('tree.html', {root: 'D:/$Programming/projects/treelo_js/src/views/'});
     }
 );
 

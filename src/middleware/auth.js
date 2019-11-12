@@ -43,7 +43,7 @@ router.get(
                 const returnTo = req.session.returnTo;
                 delete req.session.returnTo;
                 //Redirect to tree home on login
-                res.redirect(returnTo || '/treeView.html');
+                res.redirect(returnTo || '/trees');
             });
         })(req, res, next);
     }
@@ -72,7 +72,7 @@ router.get(
             client_id: process.env.AUTH0_CLIENT_ID,
             returnTo: returnTo
         });
-        
+
         logoutURL.search = searchString;
         res.redirect(logoutURL);
     }
