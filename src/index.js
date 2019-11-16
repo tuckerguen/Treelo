@@ -64,6 +64,9 @@ passport.use(strategy);
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "pug");
+
 passport.serializeUser((user, done) => {
     done(null, user);
 });

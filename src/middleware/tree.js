@@ -16,6 +16,8 @@ router.get(
     "/user", 
     secure.secured, 
     (req, res, next) => {
+        console.log(req.headers);
+        //Get user's data
         const { _raw, _json, ...userProfile } = req.user;
         res.render("user", {
             title: "Profile",
@@ -23,53 +25,62 @@ router.get(
         });
 });
 
-router.get(
-    '/trees',
-    secure.secured,
-    (req, res) => {
-        console.log('Received request for tree page');
-        res.sendFile('tree.html', {root: 'D:/$Programming/projects/treelo_js/src/views/'});
-    }
-);
-
 // Import tree model
 Tree = require('../models/treeModel');
 
 // Get trees for user
 router.get(
-    '/:userId',
+    '/data',
     secure.secured,
-    async(req, res) => {
-        Tree.find(
-            { _id: req.params.userId }, 
-            { runValidators: true },
+    async (req, res) => {
+        //Get user's data
+        const { _raw, _json, ...userProfile } = req.user;
+
+        var emails = userProfile.emails.map((email) => {
+            return email.value;
+        });
+
+        await Tree.find(
+            { 
+                ownerId: userProfile.id,
+                ownerEmail: { $in : emails }
+            }, 
             function(err, trees){
+                console.log(trees);
                 if (err) {
                     res.json({
                         status: 'error',
                         message: err,
                     });
                 }
-                res.json({
-                    status: 'success',
-                    message: 'Trees retrieved successfully',
-                    data: trees
-                });
+                else{
+                    res.json({
+                        status: 'success',
+                        message: 'Trees retrieved successfully',
+                        data: trees
+                    });
+                } 
             }
         );
+        
     }
 );
 
 // Handle create tree actions
 router.post(
-    '/:userId',
+    '/',
     secure.secured,
     async (req, res) => {
+        const { _raw, _json, ...userProfile } = req.user;
         var tree = new Tree();
         tree.title = req.body.title ? req.body.title : tree.title;
         tree.description = req.body.description;
         tree.dueDate = req.body.dueDate;
-        tree.owner = req.body.owner;
+        tree.ownerId = userProfile.id;
+        tree.ownerEmail = userProfile.emails[0];
+        //Below for testing
+        // tree.ownerId = 'auth0|5dcf7e98bfb28c0ecba5c9f2';
+        // tree.ownerEmail = 'test@test.com';
         tree.sharedUsers = req.body.sharedUsers;
         tree.isComplete = req.body.isComplete;
         tree.isOverdue = req.body.isOverdue;
@@ -88,22 +99,33 @@ router.post(
     }
 );
 
-// Handle index actions
+// Get one tree by id
 router.get(
-    '/:userId/:treeId',
+    '/:treeId',
     secure.secured,
-    (req, res) => {
-        Tree.get(function (err, trees) {
-            if (err) {
+    async (req, res) => {
+        const { _raw, _json, ...userProfile } = req.user;  
+        var emails = userProfile.emails.map((email) => {
+            return email.value;
+        });
+
+        await Tree.findOne(
+            { 
+                _id : req.params.treeId,
+                ownerId: userProfile.id,
+                ownerEmail: { $in : emails }
+            },
+            function (err, trees) {
+                if (err) {
+                    res.json({
+                        status: 'error',
+                        message: err,
+                    });
+                }
                 res.json({
-                    status: 'error',
-                    message: err,
-                });
-            }
-            res.json({
-                status: 'success',
-                message: 'Trees retrieved successfully',
-                data: trees
+                    status: 'success',
+                    message: 'Trees retrieved successfully',
+                    data: trees
             });
         });
     }
@@ -111,16 +133,17 @@ router.get(
 
 // Handle update tree info
 router.put(
-    '/:userId/:treeId',
+    '/:treeId',
     secure.secured,
     (req, res) => {
-        Tree.findById(req.params.tree_id, function (err, tree) {
+        Tree.findById(
+            req.params.tree_id, 
+            function (err, tree) {
             if (err)
                 res.send(err);
             tree.title = req.body.title ? req.body.title : tree.title;
             tree.description = req.body.description;
             tree.dueDate = req.body.dueDate;
-            tree.owner = req.body.owner;
             tree.sharedUsers = req.body.sharedUsers;
             tree.isComplete = req.body.isComplete;
             tree.isOverdue = req.body.isOverdue;
@@ -140,11 +163,14 @@ router.put(
 
 // Handle delete tree
 router.delete(
-    '/:userId/:treeId',
+    '/:treeId',
     secure.secured,
     (req, res) => {
+        const { _raw, _json, ...userProfile } = req.user;
         Tree.remove({
-            _id: req.params.tree_id
+            _id: req.params.tree_id,
+            ownerId: userProfile.id,
+            ownerEmail: userProfile.emails[0]
         }, function (err, tree) {
             if (err)
                 res.send(err);

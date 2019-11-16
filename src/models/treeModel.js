@@ -1,6 +1,6 @@
 // treeModel.js
-var mongoose = require('mongoose');
-var fkHelper = require('./fkHelper');
+const mongoose = require('mongoose');
+const validator = require('validator');
 // Setup schema
 
 var NodeSchema = mongoose.Schema({
@@ -13,9 +13,11 @@ var NodeSchema = mongoose.Schema({
         type: Date,
         default: Date.now 
     },
-    owner: {
+    ownerId: {
         type: String,
-        email: {
+        required: true,
+    },
+    ownerEmail: {
             type: String,
             unique: true,
             required: true,
@@ -24,24 +26,19 @@ var NodeSchema = mongoose.Schema({
                 if(!validator.isEmail(value)){
                     throw new Error({error: 'Invalid Email address'})
                 }
-            }
-        },
-        required: true
+            },
+            required: true
     },
     sharedUsers: [{
         type: String,
-        email: {
-            type: String,
-            unique: true,
-            required: true,
-            lowercase: true,
-            validate: value => {
-                if(!validator.isEmail(value)){
-                    throw new Error({error: 'Invalid Email address'})
-                }
+        unique: true,
+        required: true,
+        lowercase: true,
+        validate: value => {
+            if(!validator.isEmail(value)){
+                throw new Error({error: 'Invalid Email address'})
             }
-        },
-        required: true
+        },  
     }],
     isComplete: Boolean,
     isOverdue: Boolean,
