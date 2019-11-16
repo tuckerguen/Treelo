@@ -39,7 +39,7 @@ Tree = require('../models/treeModel');
 router.get(
     '/:userId',
     secure.secured,
-    (req, res) => {
+    async(req, res) => {
         Tree.find(
             { _id: req.params.userId }, 
             { runValidators: true },
@@ -64,7 +64,7 @@ router.get(
 router.post(
     '/:userId',
     secure.secured,
-    (req, res) => {
+    async (req, res) => {
         var tree = new Tree();
         tree.title = req.body.title ? req.body.title : tree.title;
         tree.description = req.body.description;

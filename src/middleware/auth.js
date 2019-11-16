@@ -18,7 +18,7 @@ const redirect = '/';
 router.get(
     '/login', 
     passport.authenticate("auth0", {
-        scope: "openid email profile"
+        scope: 'openid email profile'
     }), 
     (req, res) => {
         res.redirect(redirect);
@@ -28,21 +28,25 @@ router.get(
 router.get(
     '/callback',
     (req, res, next) => {
+        console.log('callback called');
         passport.authenticate("auth0", (err, user, info) => {
             if (err) {
                 return next(err);
             }
             if (!user) {
+                console.log('user failed');
                 //Redirect to home page if not logged in
                 return res.redirect("/");
             }
             req.logIn(user, (err) => {
                 if (err) {
+                    console.log(err);
                     return next(err);
                 }
                 const returnTo = req.session.returnTo;
                 delete req.session.returnTo;
                 //Redirect to tree home on login
+                console.log('redirect to trees');
                 res.redirect(returnTo || '/trees');
             });
         })(req, res, next);

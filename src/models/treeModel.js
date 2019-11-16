@@ -14,26 +14,32 @@ var NodeSchema = mongoose.Schema({
         default: Date.now 
     },
     owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        validate: {
-            isAsync: true,
-            validator: function(v){
-                return fkHelper(mongoose.model('User'), v);
-            },
-            message: "User doesn't exist"
+        type: String,
+        email: {
+            type: String,
+            unique: true,
+            required: true,
+            lowercase: true,
+            validate: value => {
+                if(!validator.isEmail(value)){
+                    throw new Error({error: 'Invalid Email address'})
+                }
+            }
         },
         required: true
     },
     sharedUsers: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        validate: {
-            isAsync: true,
-            validator: function(v){
-                return fkHelper(mongoose.model('User'), v);
-            },
-            message: "User doesn't exist"
+        type: String,
+        email: {
+            type: String,
+            unique: true,
+            required: true,
+            lowercase: true,
+            validate: value => {
+                if(!validator.isEmail(value)){
+                    throw new Error({error: 'Invalid Email address'})
+                }
+            }
         },
         required: true
     }],
