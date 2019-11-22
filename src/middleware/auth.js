@@ -37,7 +37,7 @@ router.get(
             if (!user) {
                 console.log('user failed');
                 //Redirect to home page if not logged in
-                return res.redirect("/");
+                return res.redirect(redirect);
             }
             req.logIn(user, (err) => {
                 if (err) {

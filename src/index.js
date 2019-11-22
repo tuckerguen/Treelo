@@ -14,7 +14,7 @@ const tree = require("./middleware/tree");
 const app = express();
 
 
-require('dotenv').config();
+require('dotenv').config({path: __dirname + '/.env'});
 app.use(bodyParser.urlencoded({
     extended: true
 }));

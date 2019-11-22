@@ -182,16 +182,4 @@ router.delete(
     }
 );
 
-// Handle view tree info
-// exports.data = async function (req, res) {
-//     Tree.findById(req.params.tree_id, function (err, tree) {
-//         if (err)
-//             res.send(err);
-//         res.json({
-//             message: 'Tree details loading..',
-//             data: tree
-//         });
-//     });
-// };
-
 module.exports = router;
