@@ -1,4 +1,3 @@
-
 //Hiddes the return from focus button upon startup
 $("#return-focus").hide();
 $("#shareFooter").hide();
@@ -73,6 +72,21 @@ function makeNewData() {
         displayTree(data[0])
         document.getElementById("mySidenav").innerHTML += "<br><button id = " + '"' + data[0]._id + '"' + "onClick = findTree()>" + data[0].title + "</button>";
         closePopup();
+
+        $.ajax({
+            method: "POST",
+            url: "/trees",
+            async: false,
+            data: {
+                "tree" : data[0]
+            },
+            success: function(data){
+                console.log(data);
+            },
+            error: function(xhr, err){
+                alert(xhr.responseText);
+            }
+      });
     }
 }
 
@@ -91,173 +105,196 @@ var oldTree;
 var oldRoot;
 //fake tree data
 //This is where ajax query for data will be using username given on login
-var treeData = [
-    {
-        "sharedUsers": [
-            "janedoe@gmail.com",
-        ],
-        "children": [
-            {
-                "title": "Child1",
-                "description": "child 1 description",
-                "dueDate": "",
-                "owner": "johndoe@gmail.com",
-                "sharedUsers": [
-                    "janedoe@gmail.com",
-                    "benbaierl@case.edu"
-                ],
-                "isComplete": false,
-                "isOverdue": false,
-                "children": []
-            }
-        ],
-        "_id": "5daf8c0d73afd05a10c15331",
-        "dueDate": null,
-        "title": "Test title 1",
-        "description": "test description",
-        "owner": "johndoe@gmail.com",
-        "isComplete": false,
-        "isOverdue": false,
-        "__v": 0
+var treeData = [{
+    "title" : "Initial",
+    "description": "init desc",
+    "_id" : "12345",
+    "isComplete" : false
+}];
+//[
+//     {
+//         "sharedUsers": [
+//             "janedoe@gmail.com",
+//         ],
+//         "children": [
+//             {
+//                 "title": "Child1",
+//                 "description": "child 1 description",
+//                 "dueDate": "",
+//                 "owner": "johndoe@gmail.com",
+//                 "sharedUsers": [
+//                     "janedoe@gmail.com",
+//                     "benbaierl@case.edu"
+//                 ],
+//                 "isComplete": false,
+//                 "isOverdue": false,
+//                 "children": []
+//             }
+//         ],
+//         "_id": "5daf8c0d73afd05a10c15331",
+//         "dueDate": null,
+//         "title": "Test title 1",
+//         "description": "test description",
+//         "owner": "johndoe@gmail.com",
+//         "isComplete": false,
+//         "isOverdue": false,
+//         "__v": 0
+//     },
+//     {
+//         "sharedUsers": [
+//             "janedoe@gmail.com",
+//             "benbaierl@case.edu"
+//         ],
+//         "children": [
+//             {
+//                 "title": "Child1",
+//                 "description": "child 2 description",
+//                 "dueDate": "",
+//                 "owner": "johndoe@gmail.com",
+//                 "sharedUsers": [
+//                     "janedoe@gmail.com",
+//                     "benbaierl@case.edu",
+//                     "johnny@aol.com"
+//                 ],
+//                 "isComplete": false,
+//                 "isOverdue": false,
+//                 "children": [{
+//                     "sharedUsers": [
+//                         "janedoe@gmail.com",
+//                         "benbaierl@case.edu"
+//                     ],
+//                     "children": [
+//                         {
+//                             "title": "Child1",
+//                             "description": "child 2 description",
+//                             "dueDate": "",
+//                             "owner": "johndoe@gmail.com",
+//                             "sharedUsers": [
+//                                 "janedoe@gmail.com",
+//                                 "benbaierl@case.edu"
+//                             ],
+//                             "isComplete": false,
+//                             "isOverdue": false,
+//                             "children": []
+//                         },
+//                         {
+//                             "sharedUsers": [
+//                                 "janedoe@gmail.com",
+//                                 "benbaierl@case.edu"
+//                             ],
+//                             "children": [
+//                                 {
+//                                     "title": "Child1",
+//                                     "description": "child 2 description",
+//                                     "dueDate": "",
+//                                     "owner": "johndoe@gmail.com",
+//                                     "sharedUsers": [
+//                                         "janedoe@gmail.com",
+//                                         "benbaierl@case.edu"
+//                                     ],
+//                                     "isComplete": false,
+//                                     "isOverdue": false,
+//                                     "children": []
+//                                 }
+//                             ],
+//                             "_id": "5daf8c0d73afd051sd",
+//                             "dueDate": null,
+//                             "title": "Test title 2",
+//                             "description": "test description",
+//                             "owner": "johndoe@gmail.com",
+//                             "isComplete": false,
+//                             "isOverdue": false,
+//                             "__v": 0
+//                         }
+//                     ],
+//                     "_id": "5daf8c0d73afd051dd",
+//                     "dueDate": null,
+//                     "title": "Test title 2",
+//                     "description": "test description",
+//                     "owner": "johndoe@gmail.com",
+//                     "isComplete": false,
+//                     "isOverdue": false,
+//                     "__v": 0
+//                 }]
+//             }
+//         ],
+//         "_id": "5daf8c0d73afd051ddhg",
+//         "dueDate": null,
+//         "title": "Test title 2",
+//         "description": "test description",
+//         "owner": "johndoe@gmail.com",
+//         "isComplete": false,
+//         "isOverdue": false,
+//         "__v": 0
+//     },
+//     {
+//         "sharedUsers": [
+//             "janedoe@gmail.com",
+//             "benbaierl@case.edu"
+//         ],
+//         "children": [
+//             {
+//                 "title": "Child1",
+//                 "description": "child 1 description",
+//                 "dueDate": "",
+//                 "owner": "johndoe@gmail.com",
+//                 "sharedUsers": [
+//                     "janedoe@gmail.com",
+//                     "benbaierl@case.edu"
+//                 ],
+//                 "isComplete": false,
+//                 "isOverdue": false,
+//                 "children": [{
+//                     "title": "Child1",
+//                     "description": "child 1 description",
+//                     "dueDate": "",
+//                     "owner": "johndoe@gmail.com",
+//                     "sharedUsers": [
+//                         "janedoe@gmail.com",
+//                         "benbaierl@case.edu"
+//                     ],
+//                     "isComplete": false,
+//                     "isOverdue": false,
+//                     "children": []
+//                 }]
+//             }
+//         ],
+//         "_id": "5daf8c0d73afd05a10c15331asdfsadf",
+//         "dueDate": null,
+//         "title": "Test title 3",
+//         "description": "test description",
+//         "owner": "johndoe@gmail.com",
+//         "isComplete": false,
+//         "isOverdue": false,
+//         "__v": 0
+//     }
+// ];
+
+
+$.ajax({
+    method: "GET",
+    url: "/trees/data",
+    async: false,
+    success: function(body){
+        if(body.data.length != 0) {
+            treeData = body.data;
+        }
     },
-    {
-        "sharedUsers": [
-            "janedoe@gmail.com",
-            "benbaierl@case.edu"
-        ],
-        "children": [
-            {
-                "title": "Child1",
-                "description": "child 2 description",
-                "dueDate": "",
-                "owner": "johndoe@gmail.com",
-                "sharedUsers": [
-                    "janedoe@gmail.com",
-                    "benbaierl@case.edu",
-                    "johnny@aol.com"
-                ],
-                "isComplete": false,
-                "isOverdue": false,
-                "children": [{
-                    "sharedUsers": [
-                        "janedoe@gmail.com",
-                        "benbaierl@case.edu"
-                    ],
-                    "children": [
-                        {
-                            "title": "Child1",
-                            "description": "child 2 description",
-                            "dueDate": "",
-                            "owner": "johndoe@gmail.com",
-                            "sharedUsers": [
-                                "janedoe@gmail.com",
-                                "benbaierl@case.edu"
-                            ],
-                            "isComplete": false,
-                            "isOverdue": false,
-                            "children": []
-                        },
-                        {
-                            "sharedUsers": [
-                                "janedoe@gmail.com",
-                                "benbaierl@case.edu"
-                            ],
-                            "children": [
-                                {
-                                    "title": "Child1",
-                                    "description": "child 2 description",
-                                    "dueDate": "",
-                                    "owner": "johndoe@gmail.com",
-                                    "sharedUsers": [
-                                        "janedoe@gmail.com",
-                                        "benbaierl@case.edu"
-                                    ],
-                                    "isComplete": false,
-                                    "isOverdue": false,
-                                    "children": []
-                                }
-                            ],
-                            "_id": "5daf8c0d73afd051sd",
-                            "dueDate": null,
-                            "title": "Test title 2",
-                            "description": "test description",
-                            "owner": "johndoe@gmail.com",
-                            "isComplete": false,
-                            "isOverdue": false,
-                            "__v": 0
-                        }
-                    ],
-                    "_id": "5daf8c0d73afd051dd",
-                    "dueDate": null,
-                    "title": "Test title 2",
-                    "description": "test description",
-                    "owner": "johndoe@gmail.com",
-                    "isComplete": false,
-                    "isOverdue": false,
-                    "__v": 0
-                }]
-            }
-        ],
-        "_id": "5daf8c0d73afd051ddhg",
-        "dueDate": null,
-        "title": "Test title 2",
-        "description": "test description",
-        "owner": "johndoe@gmail.com",
-        "isComplete": false,
-        "isOverdue": false,
-        "__v": 0
-    },
-    {
-        "sharedUsers": [
-            "janedoe@gmail.com",
-            "benbaierl@case.edu"
-        ],
-        "children": [
-            {
-                "title": "Child1",
-                "description": "child 1 description",
-                "dueDate": "",
-                "owner": "johndoe@gmail.com",
-                "sharedUsers": [
-                    "janedoe@gmail.com",
-                    "benbaierl@case.edu"
-                ],
-                "isComplete": false,
-                "isOverdue": false,
-                "children": [{
-                    "title": "Child1",
-                    "description": "child 1 description",
-                    "dueDate": "",
-                    "owner": "johndoe@gmail.com",
-                    "sharedUsers": [
-                        "janedoe@gmail.com",
-                        "benbaierl@case.edu"
-                    ],
-                    "isComplete": false,
-                    "isOverdue": false,
-                    "children": []
-                }]
-            }
-        ],
-        "_id": "5daf8c0d73afd05a10c15331asdfsadf",
-        "dueDate": null,
-        "title": "Test title 3",
-        "description": "test description",
-        "owner": "johndoe@gmail.com",
-        "isComplete": false,
-        "isOverdue": false,
-        "__v": 0
+    error: function(xhr, err){
+        alert(xhr.responseText);
     }
-];
+  });
 
 //finds tree based on ID
 function findTree(d) {
     $("#return-focus").hide();
     treeData.forEach(findMatchingID)
     displayTree(foundTreeForRender);
-    findSharedTrees(currentTree);
+    BFS(currentTree, findSharedTrees);
+    // findSharedTrees(currentTree);
     showSharedButtons();
 }
+
 function findMatchingID(item) {
     if (item._id == event.target.id) {
         foundTreeForRender = item;
@@ -302,7 +339,8 @@ currentTree = treeData[0];
 root.x0 = 0;
 root.y0 = width / 2;
 
-findSharedTrees(currentTree);
+// findSharedTrees(currentTree);
+BFS(currentTree, findSharedTrees);
 // for(var i = 0; i < sharedUsersToDisplay.length; i++){
 //     alert(sharedUsersToDisplay[i]);
 //     alert(sharedUsersToDisplayNodes[i])
@@ -356,7 +394,7 @@ function update(source) {
 
     nodeEnter.append("circle")
         .attr("r", 10)
-        .style("fill", function (d) { if (d.isComplete === false) { return d._children ? "lightsteelblue" : "#fff"; } else { return "lightgreen" } });
+        .style("fill", function (d) { if (d.isComplete === false || d.isComplete == "false") { return d._children ? "lightsteelblue" : "#fff"; } else { return "black" } });
 
     nodeEnter.append("text")
         .attr("y", function (d) {
@@ -374,7 +412,7 @@ function update(source) {
 
     nodeUpdate.select("circle")
         .attr("r", 10)
-        .style("fill", function (d) { if (d.isComplete === false) { return d._children ? "lightsteelblue" : "#fff"; } else { return d._children ? "green" : "lightgreen"; } });
+        .style("fill", function (d) { if (d.isComplete === false || d.isComplete == "false") { return d._children ? "lightsteelblue" : "#fff"; } else { return d._children ? "green" : "orange"; } });
     nodeUpdate.select("text")
         .style("fill-opacity", 1);
 
@@ -448,12 +486,19 @@ function click(d) {
     document.getElementById("title-span").innerHTML = d.title;
     currentNode = d;
     var people = "";
-    for (var i = 0; i < currentNode.sharedUsers.length; i++) {
-        people += (currentNode.sharedUsers[i]);
-        if (currentNode.sharedUsers[i + 1] != null) {
-            people += "<br>"
+
+    if(currentNode.sharedUsers != null){
+        for (var i = 0; i < currentNode.sharedUsers.length; i++) {
+            people += (currentNode.sharedUsers[i]);
+            if (currentNode.sharedUsers[i + 1] != null) {
+                people += "<br>"
+            }
         }
     }
+    else{
+        currentNode.sharedUsers = [];
+    }
+
     //alert('here')
     document.getElementById("members").innerHTML = people;
     $('#myModal').modal("toggle");
@@ -554,6 +599,7 @@ function deleteTree(d) {
 }
 
 function displayTree(data) {
+    currentTree = data;
     root = data;
     oldRoot = currentNode;
     root.x0 = 0;
@@ -563,7 +609,8 @@ function displayTree(data) {
         sharedUsersToDisplay = [];
         sharedUsersToDisplayNodes = [];
     }
-    findSharedTrees(root);
+    // findSharedTrees(root);
+    BFS(currentTree, findSharedTrees);
     showSharedButtons();
 
     update(root);
@@ -621,6 +668,10 @@ function setDeleteMode() {
     removeNode();
 }
 
+function removeParentReferences(tree){
+    tree.parent = null;
+}
+
 function setAddMode() {
     var newId = Math.random() + "";
     var newChild = {
@@ -646,6 +697,23 @@ function setAddMode() {
         .style("animation-duration", "2s")
         .style("animation-timing-function", "ease-in");
 
+    var currentTreeData = currentTree;
+    BFS(currentTreeData, removeParentReferences);
+
+    $.ajax({
+        method: "PUT",
+        url: "/trees/" + currentTree._id,
+        async: false,
+        data: {
+            "tree" : currentTreeData
+        },
+        success: function(data){
+            console.log(data);
+        },
+        error: function(xhr, err){
+            alert(xhr.responseText);
+        }
+    });
 }
 
 function setFocusMode() {
@@ -671,7 +739,7 @@ function markDone() {
         .style("animation-timing-function", "ease-in")
     svg.selectAll("circle")
         .filter(function (d) { if (d._id === currentNode._id) { d.isComplete = true; } return d._id === currentNode._id; })
-        .style("fill", "lightgreen");
+        .style("fill", "red");
 
 
     $('#myModal').modal("toggle");
@@ -751,7 +819,18 @@ function shareTree() {
 //         }
 //     }
 // }
-function findSharedTrees(thisTree) {
+function findSharedTrees(thisTree){
+    if (thisTree.sharedUsers != null && thisTree.sharedUsers != []) {
+        for (var i = 0; i < thisTree.sharedUsers.length; i++) {
+            if (!sharedUsersToDisplay.includes(thisTree.sharedUsers[i])) {
+                sharedUsersToDisplayNodes.push(thisTree);
+                sharedUsersToDisplay.push(thisTree.sharedUsers[i]);
+            }
+        }
+    }
+}
+
+function BFS(thisTree, operation) {
     // alert('here')
     // alert(thisTree.children.length)
     // BFSQueue.push(thisTree)
@@ -761,18 +840,13 @@ function findSharedTrees(thisTree) {
             BFSQueue.push(thisTree.children[i]);
         }
     }
-    if (thisTree.sharedUsers != null && thisTree.sharedUsers != []) {
-        for (var i = 0; i < thisTree.sharedUsers.length; i++) {
-            if (!sharedUsersToDisplay.includes(thisTree.sharedUsers[i])) {
-                sharedUsersToDisplayNodes.push(thisTree);
-                sharedUsersToDisplay.push(thisTree.sharedUsers[i]);
-            }
-        }
-    }
+
+    operation(thisTree);
+
     var nexttocheck = BFSQueue.shift();
     // BFSQueue.shift()
     if (nexttocheck != null) {
-        findSharedTrees(nexttocheck)
+        BFS(nexttocheck, operation);
     }
 }
 

@@ -81,14 +81,6 @@ app.use((req, res, next) => {
 });
 
 //Router Mounting
-//Default route response
-app.get(
-    '/',
-    (req, res) => {
-        res.sendFile('/home.html', {root: 'D:/$Programming/projects/treelo_js/src/views'});
-    }
-);
-
 app.use('/', auth);
 app.use('/trees', tree);
 
