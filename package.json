@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "env-cmd -f ./src/.env nodemon src/index.js",
-    "test": "./node_modules/.bin/mocha ./src/test/*Test.js"
+    "test": "./node_modules/.bin/mocha --timeout 15000 ./src/test/*Test.js"
   },
   "keywords": [
     "Treelo",

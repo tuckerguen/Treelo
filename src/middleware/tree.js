@@ -121,7 +121,7 @@ router.get(
         user = getUserProfile(req);
         console.log('finding trees for: ' + user.id);
         findTrees(user).then((trees) => {
-            console.log('Final trees: ' + trees);
+            console.log(trees);
             if(trees instanceof Error){
                 res.status(400).json({
                     status: 'error',
@@ -147,7 +147,6 @@ router.get(
         console.log('finding root: ' + req.params.nodeId);
         var user = getUserProfile(req);
         findTree(req.params.nodeId, user).then((tree) => {
-            console.log('Final tree: ' + tree);
             if(tree instanceof Error){
                 res.status(400).json({
                     status: 'error',
@@ -239,13 +238,12 @@ router.delete(
     (req, res) => {
         var user = getUserProfile(req);
         
-        Node.remove({
+        Node.deleteMany({
             _id: req.params.nodeId,
             ownerId: user.id,
             ownerEmail: { $in : user.emails }
         }, 
         function (err, Node) {
-            console.log(Node);
             if (err) {
                 res.status(400).send(err);
             }
@@ -268,7 +266,6 @@ router.get(
     "/user", 
     secure.secured, 
     (req, res, next) => {
-        console.log(req.headers);
         //Get user's data
         var user = getUserProfile(req);
         res.render("user", {
