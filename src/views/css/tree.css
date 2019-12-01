@@ -1,65 +1,64 @@
+/* The Tree Diagram Stlying */
 #tree-div{
     width: 100%;
     height: 760px;
     border:1px solid;
-    /* padding-right:15px; */
-    /* right:10px; */
 }
 
+/* The Hover Acion for Submitting New Tree Data */
 #submit:hover{
     background-color: lightgreen;
 }
 
+/* The Hover Action for Canceling New Tree Data Submission */
 #cancel:hover{
     background-color: red;
 }
 
-
-
+/* The Card Preview Styling */
 #card-preview{
     position: fixed;
-    bottom: 0; right: 0px;
-    outline: thick solid black;
-    height: 15%;
-    width: 100%;
+    height: 10%;
+    width: 10%;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 0 5px black;
+    text-align: center;
+    background: white;
 }
 
-/* .right-bar {
-    position:fixed;
-    right: 0; top: 74px; bottom: 0;
-    width: 250px;
-    border: 1px solid;
-    height: 100%;
-} */
+/* The Styling for the Section Holding the Tree Diagram */
 svg{
     overflow: visible;
     width: 100%;
     height: 100%;
 }
+
+/* Each Tree Node Styling */
 .node {
     cursor: pointer;
 }
 
+/* The Styling for the Circles that Represent Each Node */
 .node circle {
     fill: #fff;
     stroke: black;
     stroke-width: 2px;
 }
 
+/* The Styling for the Text that are Appended to Each Node */
 .node text {
     font: 12px sans-serif;
 }
 
-.right-bar:hover {
-    background-color: gray;
-}
-
+/* The Styling for the Links Connecting Each Node Together */
 .link {
     fill: none;
     stroke: #ccc;
     stroke-width: 2px;
 }
 
+/* The Styling for the Tree Side Navigation Bar */
 .sidenav {
     height: 100%;
     width: 0;
@@ -74,11 +73,13 @@ svg{
     padding-top: 60px;
 }
 
+/* The Styling for the Modal Representing Card Information */
 #modal-description{
     max-height: 500px;
     overflow-y: auto;
 }
 
+/* The Styling for the Exit Button of the Tree Side Navigation */
 .sidenav a {
     padding: 8px 8px 8px 32px;
     text-decoration: none;
@@ -92,6 +93,7 @@ svg{
     color: #f1f1f1;
 }
 
+/* The Styling for the Exit Button Within the Tree Side Navigation */
 .sidenav .closebtn {
     position: absolute;
     top: 0;
@@ -100,6 +102,7 @@ svg{
     margin-left: 50px;
 }
 
+/* The Hover Action for the Closing Button of the Tree Side Navigation */
 .sidenav button{
     display: 'block';
     width: 200px;
@@ -108,6 +111,7 @@ svg{
     border-radius: 10%;
 }
 
+/* The Hover Action for the Buttons within the Tree Side Navigation Bar */
 .sidenav button:hover{
     background-color: lightgreen;
     outline: white;
@@ -116,29 +120,21 @@ svg{
     border-right: 4px solid black;
 }
 
-
-#main {
+/* The Styling for the Tree Side Navigation Bar */
+#treeNav {
     transition: margin-left .5s;
     padding: 16px;
 }
 
-#main2 {
+/* The Styling for the Share Side Navigation Bar */
+#shareNav {
     transition: margin-right .5s;
     position: absolute;
     left: 90%;
     top: 2%;
 }
 
-/* @media screen and (max-height: 450px) {
-    .sidenav {
-        padding-top: 15px;
-    }
-
-    .sidenav a {
-        font-size: 18px;
-    }
-} */
-
+/* The Styling for the Right Click Context Menu */
 #context-menu{
     width: auto;
     height: auto;
@@ -147,10 +143,12 @@ svg{
     display: none;
 }
 
+/* More Styling for the Right Click Context Menu */
 #context-menu ul{
     padding: 0px 0px 0px 0px;
 }
 
+/* General Styling for the Buttons Within the Right Click Context Menu */
 #context-menu ul button{
     padding: 10px 5px 10px 5px;
     text-align: center;
@@ -162,30 +160,32 @@ svg{
     font-size: 10px;
 }
 
+/* The Action Styling for the Add Node Button Within the Right Click Context Menu */
 #context-menu ul #add-node-mode:hover{
     background: lightgreen;
 }
 
-#context-menu ul #share-with-mode:hover{
-    background: lightgreen;
-}
-
+/* The Action Syling for the Add Node Button Within the Right Click Context Menu */
 #context-menu ul #share-tree:hover{
     background: green;
 }
 
+/* The Action Syling for the Remove Node Button Within the Right Click Context Menu */
 #context-menu ul #remove-node:hover{
     background: rgb(206, 71, 71);
 }
 
+/* The Action Syling for the Set Focus Node Button Within the Right Click Context Menu */
 #context-menu ul #focus-node:hover{
     background: rgb(228, 176, 81);
 }
 
+/* The Action Syling for the Return From Focus Node Button Within the Right Click Context Menu */
 #context-menu ul #return-focus{
     background: orange;
 }
 
+/* The General Action Styling for the Context Menu Buttons */
 #context-menu ul button:hover{
     background: lightgray;
     outline: white;
@@ -194,6 +194,7 @@ svg{
  
 }
 
+/* The Styling for the Create New Tree Popup Button */
 #create-tree{
     position: absolute;
     left: 83%;
@@ -201,10 +202,12 @@ svg{
     
 }
 
+/* The Action Styling for the Create New Tree Popup Button */
 #create-tree:hover{
     background: lightgreen;
 }
   
+/* The Styling for the New Tree Form */
 .newtreeform{
     position: absolute;
     display: none;
@@ -212,6 +215,7 @@ svg{
     height: auto;
 }
 
+/* The Styling for the Share Tree Form */
 .sharetreeform{
     position: absolute;
     display: none;
@@ -219,8 +223,8 @@ svg{
     height: auto;
 }
 
-
-  .sideshare {
+/* The Styling for the Trees Shared Navigation Bar */
+.sideshare {
     height: 100%;
     width: 0;
     position: fixed;
@@ -234,7 +238,8 @@ svg{
     padding-top: 60px;
 }
 
-  .sideshare a {
+/* Styling for the Trees Sharing Navigation Bar Close Button */
+.sideshare a {
     padding: 8px 32px 8px 8px;
     text-decoration: none;
     font-size: 25px;
@@ -244,10 +249,12 @@ svg{
     right: 0;
 }
 
+/* The ACtion Styling for the Close Button of the Trees Shared Side Navigation */
 .sideshare a:hover {
     color: #f1f1f1;
 }
 
+/* More Styling for the Close Button for the Trees Shared Side Navigation */
 .sideshare .closebtn {
     position: absolute;
     top: 0;
@@ -256,6 +263,7 @@ svg{
     margin-right: 50px;
 }
 
+/* Styling for Each Button Within the Trees Shared Side Navigation Bar */
 .sideshare button{
     display: inline-block;
     width: 200px;
@@ -264,6 +272,7 @@ svg{
     border-radius: 10%;
 }
 
+/* The Styling for the Footer of the Trees Shared Side Navigation Bar for the Return From Focus Button */
 #shareFooter{
     position: absolute;
     top: 5px;
@@ -271,16 +280,18 @@ svg{
     font-size: 10px;
 }
 
+/* Styling for the Return From Focus Button within the Trees Shared Side Navigation Bar */
 #return{
     height: auto;
     width: 100px
 }
 
+/* The Styling for the Action for the Return From Focus Button within the Trees Shared Side Navigation Bar */
 #return:hover{
     background-color: gold;
 }
 
-
+/* The General Action Syling for Buttons within the Trees Shared Side Navigation Bar */
 .sideshare button:hover{
     background-color: lightgreen;
     outline: white;
@@ -289,12 +300,14 @@ svg{
     border-right: 4px solid black;
 }
 
+/* The Styling for the Due Date Section of the Card Information Modal */
 #duedate{
-position: absolute;
-right: 10px;
-top: 6%;
+    position: absolute;
+    right: 10px;
+    top: 6%;
 }
 
+/* The Styling for the Description in the Card Information Modal */
 #description-span{
     resize:none;
     position: relative;
@@ -303,44 +316,47 @@ top: 6%;
     left: 5%;
 }
 
+/* The Label Styling for the Description in the Card Information Modal  */
 #desc-label{
     position: relative;
     left:2%;
 }
 
-#members{
+/* The Label Styling for the Shared Members Section in the Card Information Modal  */
+#members-label{
     position: relative;
+    left:2%;
 }
 
-/* #myModal{
-    position: absolut;
-    height: 1000px;
-} */
+/* The Styling for the Shared Members Section in the Card Information Modal  */
+#members{
+    resize:none;
+    position: relative;
+    width: 90%;
+    left: 5%;
+}
 
+/* The Animation for Blinking a Node When it is Newly Added */
 @keyframes addblink{
     0%{
-        /* opacity: 1; */
         r: 10;
     }
     25%{
-        /* opacity: 0; */
         r:15;
     }
     50%{
-        /* opacity: 1; */
         r:10;
         fill: green;
     }
     75%{
-        /* opacity: 0; */
         r:15
     }
     100%{
-        /* opacity: 1; */
         r:10
     }
 }
 
+/* The Animation for Blinking a Node when it is Marked as Done */
 @keyframes doneblink{
     0%{
         opacity: 1;
@@ -365,33 +381,33 @@ top: 6%;
     }
 }
 
+/* The Animation for Blinking a Node when it is Set as the Focus Node */
 @keyframes focusblink{
     0%{
-        /* opacity: 1; */
         r: 10;
-        /* fill: white; */
     }
     25%{
-        /* opacity: 0; */
         r:15;
-        /* fill: white; */
     }
     50%{
         opacity: 1;
         r:10;
         fill: rgb(228, 176, 81);
-        /* fill: rgb(228, 176, 81); */
-        
-
     }
     75%{
-        /* opacity: 0; */
         r:15;
-        /* fill:white; */
-        /* fill: white; */
     }
     100%{
-        /* opacity: 1; */
         r:10;
         }
+}
+
+/* The Animation for Fading in the Card Preview */
+@keyframes fadein{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
 }

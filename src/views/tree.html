@@ -4,41 +4,47 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- General Styling -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/tree.css" />
+    <!-- The Corresponding CSS styling -->
+    <link rel="stylesheet" href="css/tree.css" />
+    <!-- For Jquery Code -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- For the Modal -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
 </head>
 
-<!-- Right Click Menu -->
+<!-- Right Click Context Menu -->
 <div id="context-menu">
     <ul>
-        <button type="button" id="add-node-mode" onClick="setAddMode()">Add Node?</button>
-        <br><button type="button" id="remove-node" onClick="setDeleteMode()">Delete Card?</button>
-        <!-- <br><button type="button" id="share-with" onClick="showUserTree(this.id)">Members</button> -->
+        <!-- Button to Add a Node -->
+        <button type="button" id="add-node-mode" onClick="addNode()">Add Node?</button>
+        <!-- Button to Remove a Node -->
+        <br><button type="button" id="remove-node" onClick="removeNode()">Delete Card?</button>
+        <!-- Button to Share a Tree -->
         <br><button type="button" id="share-tree" onClick="openShareMenu()">SHARE</button>
-        <br><button type="button" id="focus-node" onClick="setFocusMode()">Set Focus Card?</button>
+        <!-- Button to Set a Node as the Focus -->
+        <br><button type="button" id="focus-node" onClick="setFocusNode()">Set Focus Card?</button>
+        <!-- Button to Return from the focus view -->
         <br><button type="button" id="return-focus" onClick="returnFromFocus()">Expand from Focus</button>
     </ul>
 </div>
 
-<!--Navigation Bar-->
-<div id="main">
+<!--Tree Navigation Bar-->
+<div id="treeNav">
     <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Treelo Menu</span>
 </div>
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 </div>
 
-<!--Shared Bar-->
-<div id="main2">
-    <span style="font-size:30px;cursor:pointer" onclick="openShare()">&#9776; Members</span>
+<!--Tree Shared Navigation Bar-->
+<div id="shareNav">
+    <span style="font-size:30px;cursor:pointer" onclick="openShare()">Members &#9776;</span>
 </div>
 <div id="mySideShare" class="sideshare">
     <a href="javascript:void(0)" class="closebtn" onclick="closeShare()">&times;</a>
     <div id="currentTreeShared">
-        Here
     </div>
     <div id="shareFooter">
         <br><button id="return" type="button" onClick="returnFromFocus()">Expand from Share View</button>
@@ -48,13 +54,8 @@
 
 
 <div class="popup">
-    <!-- <br><button type="button" id="add-node-mode" onClick="setAddMode()">Add Node?</button>
-    <br><button type="button" id="remove-node" onClick="setDeleteMode()">Delete Card?</button>
-    <br><button type="button" id="focus-node" onClick="setFocusMode()">Set Focus Card?</button> -->
-    <!-- <br><button type="button" id="return-focus" onClick="returnFromFocus()">Expand from Focus</button> -->
-    <!-- Form for submitting new tree data -->
-    <br><button type="button" id="create-tree" onClick="showPopup()">Create New Tree</button>
-
+    <!-- Form for Submitting New Tree Data -->
+    <br><button type="button" id="create-tree" onClick="showNewTreePopup()">Create New Tree</button>
     <span class="newtreeform" id="newtreeform">
         <form>
             Enter New Root Node Information:
@@ -68,13 +69,13 @@
             </div>
             <div>
                 <br><input id="submit1" type="button" value="submit" onclick="makeNewData()" />
-                <button id="cancel" type="button" onclick="closePopup()">Cancel </button>
+                <button id="cancel" type="button" onclick="closeNewTreePopup()">Cancel </button>
             </div>
         </form>
     </span>
 </div>
 
-
+<!-- Form for Sharing a Tree -->
 <span class="sharetreeform" id="sharetreeform">
     <form>
         Enter Email of User to Share Tree <br>With From Current Node
@@ -90,7 +91,7 @@
 </span>
 
 <body>
-    <!-- Modal -->
+    <!-- Modal for Displaying Node/Card Information -->
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
             <form class="modal-content">
@@ -105,7 +106,7 @@
                 </div>
                 <label id = "desc-label" for="description-span">Description:</label>
                 <p id="modal-description" style="white-space: pre-line;"> <span id=description-span> test</span> </p>
-                <label for="members">Members:</label>
+                <label id = "members-label" for="members">Members:</label>
                 <div id="members">
                 </div>
                 <div class="modal-footer">
@@ -113,22 +114,20 @@
                     <button type="button" id="mark-done" onClick="markDone()">MarkComplete</button>
                 </div>
             </form>
-
         </div>
     </div>
 
+    <!-- Area for Displaying the Tree Diagram -->
     <div id="tree-div">
-
     </div>
 
+    <!-- The Card Preview -->
     <div id="card-preview">
-
     </div>
 
     <!-- load the d3.js library and TreeJS file-->
     <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="/tree.js"></script>
+    <script src="javascript/tree.js"></script>
 
 </body>
-
 </html>
