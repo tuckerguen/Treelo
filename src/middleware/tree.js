@@ -1,16 +1,19 @@
-// treeController.js
+// nodeController.js
 const express = require('express');
 const secure = require('./secure');
 const router = express.Router();
+
+// Import node model
+Node = require('../models/nodeModel');
 
 function getUserProfile(req){
     const testUser = {
         _raw: "",
         _json: "",
-        id: 'auth0|5dcf7e98bfb28c0ecba5c9f2',
+        id: 'test|5dcf7e98bfb28c0ecba5c9f2',
         emails: [
             {
-                value: 'test@test.com'
+                value: 'autotest@test.com'
             }
         ]
     };
@@ -40,71 +43,121 @@ router.get(
     }
 );
 
-// Import tree model
-Tree = require('../models/treeModel');
 
-// Get trees for user
-router.get(
-    '/data',
-    secure.secured,
-    async (req, res) => {
-        //Get user's data
-        user = getUserProfile(req);
-
-        await Tree.find(
-            { 
-                ownerId: user.id,
-                ownerEmail: { $in : user.emails }
-            }, 
-            function(err, trees){
-                if (err) {
-                    res.status(401);
-                    res.json({
-                        status: 'error',
-                        message: err,
-                    });
-                }
-                else{
-                    res.json({
-                        status: 'success',
-                        message: 'Trees retrieved successfully',
-                        data: trees
-                    });
-                } 
-            }
-        );
-        
-    }
-);
-
-// Handle create tree actions
+// Handle create Node actions
 router.post(
     '/',
     secure.secured,
-    async (req, res) => {
+    (req, res) => {
         var user = getUserProfile(req);
-        var reqTree = req.body.tree;
-        var tree = new Tree();
-        //tree.nodeId = req.body.node_id;
-        tree.title = reqTree.title;
-        tree.description = reqTree.description;
-        tree.dueDate = reqTree.dueDate ? reqTree.dueDate : new Date();
-        tree.ownerId = user.id;
-        tree.ownerEmail = user.emails[0];
-        tree.sharedUsers = reqTree.sharedUsers;
-        tree.isComplete = reqTree.isComplete;
-        tree.isOverdue = reqTree.isOverdue ? reqTree.isOverdue : false;
-        tree.children = reqTree.children;
-        // save the tree and check for errors
-        tree.save(function (err) {
-            // Check for validation error
-            if (err){
-                res.json(err);
-                console.log(err);
+        var reqNode = req.body.tree;
+        console.log('saving tree: ' + reqNode.title);
+        savedTree = saveRecursive(reqNode, true, user, saveNode);
+    
+        if(savedTree instanceof Error){
+            res.status(400);
+        }
+        else {
+            res.status(201).json({
+                message: 'New tree created!',
+                data: savedTree
+            });
+        }
+    }
+);
+
+function saveNode(newNode){
+    newNode.save(function (err) {
+        // Check for validation error
+        if (err){
+            console.log(err);
+            return err;
+        }
+    });
+    console.log('saved child w/ id: ' + newNode._id);
+    return newNode;
+}
+
+function saveRecursive(node, isRoot, user, save){
+    console.log('saving children of node: ' + node.title);
+    console.log('children: ' + node.children.toString());
+
+    var newNode = new Node();  
+    var children = [];
+
+    if(node.children != undefined && node.children.length != 0){
+        node.children.forEach(child => {
+            console.log('saving children of: ' + child.title);
+            children.push(saveRecursive(child, false, user, saveNode));
+        });
+    }
+    else {
+        newNode.children = [];
+    }
+
+    newNode.root = isRoot;
+    newNode.title = node.title;
+    newNode.description = node.description;
+    newNode.dueDate = node.dueDate ? node.dueDate : new Date(newNode.dueDate.setMonth(newNode.dueDate.getMonth()+1));
+    newNode.ownerId = user.id;
+    newNode.ownerEmail = user.emails[0];
+    newNode.sharedUsers = node.sharedUsers;
+    newNode.isComplete = node.isComplete;
+    newNode.isOverdue = node.isOverdue ? node.isOverdue : false;
+    newNode.children = children;           
+
+    //Save the child, put the id reference into the array of references
+    console.log('saving node: ' + node.title);
+    finalNode = save(newNode);
+    return finalNode;
+}
+
+// Get nodes for user
+router.get(
+    '/data',
+    secure.secured,
+    (req, res) => {
+        //Get user's data
+        user = getUserProfile(req);
+        console.log('finding trees for: ' + user.id);
+        findTrees(user).then((trees) => {
+            console.log('Final trees: ' + trees);
+            if(trees instanceof Error){
+                res.status(400).json({
+                    status: 'error',
+                    message: err,
+                });
             }
             else {
-                res.json({
-                    message: 'New tree created!',
+                res.status(200).json({
+                    status: 'success',
+                    message: 'trees retrieved successfully',
+                    data: trees
+                });
+            }
+        });
+    }
+);
+
+// Get one node by id
+router.get(
+    '/:nodeId',
+    secure.secured,
+    (req, res) => {
+        console.log('finding root: ' + req.params.nodeId);
+        var user = getUserProfile(req);
+        findTree(req.params.nodeId, user).then((tree) => {
+            console.log('Final tree: ' + tree);
+            if(tree instanceof Error){
+                res.status(400).json({
+                    status: 'error',
+                    message: err,
+                });
+            }
+            else {
+                res.status(200).json({
+                    status: 'success',
+                    message: 'tree retrieved successfully',
                     data: tree
                 });
             }
@@ -112,120 +165,99 @@ router.post(
     }
 );
 
-// Get one tree by id
-router.get(
-    '/:treeId',
-    secure.secured,
-    async (req, res) => {
-        var user = getUserProfile(req);
+function findTree(nodeId, user){
+    return Node.findOne({
+        _id : nodeId,
+        ownerId : user.id,
+        ownerEmail: { $in : user.emails }
+    })
+}
 
-        await Tree.findOne(    
-            { 
-                _id : req.params.treeId,
-                ownerId: user.id,
-                ownerEmail: { $in : user.emails }
-            },
-            function (err, tree) {
-                if (err) {
-                    res.json({
-                        status: 'error',
-                        message: err,
-                    });
-                }
-                else if(tree != null) {
-                    res.json({
-                        status: 'success',
-                        message: 'Tree retrieved successfully',
-                        data: tree
-                    });
-                }
-                else {
-                    res.json({
-                        message: 'No tree with id ' + req.params.treeId + ' found'
-                    });
-                }
-            }
-        );
-    }
-);
+function findTrees(user){
+    return Node.find({
+        root: true,
+        ownerId : user.id,
+        ownerEmail: { $in : user.emails }
+    })
+}
 
-// Handle update tree info
+// Handle update node info
 router.put(
-    '/:treeId',
+    '/:nodeId',
     secure.secured,
-    async (req, res) => {
+    (req, res) => {
         var user = getUserProfile(req);
-        var reqTree = req.body.tree;
+        var reqNode = req.body.tree;
 
-        await Tree.findOne({
-            _id : req.params.treeId,
+        Node.findOne({
+            _id : req.params.nodeId,
             ownerId : user.id,
             ownerEmail: { $in : user.emails }
         },
-        function (err, tree) {
+        function (err, node) {
             if (err){
-                res.send(err);
+                res.status(400).send(err);
             }
-            else if(tree != null) {
-                tree.title = reqTree.title;
-                tree.description = reqTree.description;
-                tree.dueDate = reqTree.dueDate;
-                tree.ownerEmail = reqTree.ownerEmail;
-                tree.ownerId = reqTree.ownerId;
-                tree.sharedUsers = reqTree.sharedUsers;
-                tree.isComplete = reqTree.isComplete;
-                tree.isOverdue = reqTree.isOverdue;
-                tree.children = reqTree.children;
-                // save the tree and check for errors
-                tree.save(function (err) {
-                    if (err){
-                        console.log(err);
-                        res.json(err);
+            else if(node != null) {
+                Node.deleteMany({
+                    _id: req.params.nodeId,
+                    ownerId: user.id,
+                    ownerEmail: { $in : user.emails }
+                }).then(() => {
+                    node.title = reqNode.title;
+                    node.description = reqNode.description;
+                    node.dueDate = reqNode.dueDate;
+                    node.ownerEmail = reqNode.ownerEmail;
+                    node.ownerId = reqNode.ownerId;
+                    node.sharedUsers = reqNode.sharedUsers;
+                    node.isComplete = reqNode.isComplete;
+                    node.isOverdue = reqNode.isOverdue;
+                    node.children = reqNode.children;
+                    // save the node and check for errors
+                    console.log('saving');
+                    savedTree = saveRecursive(reqNode, true, user, saveNode);
+                    
+                    if(savedTree instanceof Error){
+                        res.status(400);
                     }
                     else {
-                        console.log("saved");
-                        res.json({
-                            message: 'Tree Info updated',
-                            data: tree
+                        res.status(201).json({
+                            message: 'Tree updated!',
+                            data: savedTree
                         });
                     }
-                });
-            }
-            else {
-                res.json({
-                    message: 'No tree with id ' + req.params.treeId + ' found'
-                });
+                });        
             }
         });
     }
 );
 
-// Handle delete tree
+// Handle delete node
 router.delete(
-    '/:treeId',
+    '/:nodeId',
     secure.secured,
     (req, res) => {
         var user = getUserProfile(req);
         
-        Tree.deleteOne({
-            _id: req.params.treeId,
+        Node.remove({
+            _id: req.params.nodeId,
             ownerId: user.id,
             ownerEmail: { $in : user.emails }
         }, 
-        function (err, tree) {
-            console.log(tree);
+        function (err, Node) {
+            console.log(Node);
             if (err) {
-                res.send(err);
+                res.status(400).send(err);
             }
-            else if(tree != null){
-                res.json({
+            else if(Node != null){
+                res.status(200).json({
                     status: "success",
-                    message: 'Tree deleted'
+                    message: 'Node deleted'
                 });
             }
             else{
-                res.json({
-                    message: 'No tree with id ' + req.params.treeId + ' found'
+                res.status(400).json({
+                    message: 'No Node with id ' + req.params.nodeId + ' found'
                 }); 
             }
         });

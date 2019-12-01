@@ -4,6 +4,10 @@ const validator = require('validator');
 // Setup schema
 
 var NodeSchema = mongoose.Schema({
+    root: {
+        type: Boolean,
+        required: true
+    },
     title: {
         type: String,
         required: true
@@ -19,7 +23,6 @@ var NodeSchema = mongoose.Schema({
     },
     ownerEmail: {
             type: String,
-            unique: true,
             required: true,
             lowercase: true,
             validate: value => {
@@ -31,7 +34,6 @@ var NodeSchema = mongoose.Schema({
     },
     sharedUsers: [{
         type: String,
-        unique: true,
         required: true,
         lowercase: true,
         validate: value => {
@@ -42,11 +44,23 @@ var NodeSchema = mongoose.Schema({
     }],
     isComplete: Boolean,
     isOverdue: Boolean,
-    children: [this]
+    children: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Node'
+    }]
 });
 
+var autoPopulateChildren = function(next) {
+    this.populate('children');
+    next();
+};
+
+NodeSchema
+.pre('findOne', autoPopulateChildren)
+.pre('find', autoPopulateChildren)
+
 // Export Tree model
-var Tree = module.exports = mongoose.model('Tree', NodeSchema);
+var Node = module.exports = mongoose.model('Node', NodeSchema);
 module.exports.get = function (callback, limit) {
-    Tree.find(callback).limit(limit);
+    Node.find(callback).limit(limit);
 }
