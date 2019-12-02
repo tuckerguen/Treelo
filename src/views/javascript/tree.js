@@ -632,8 +632,8 @@ function addNode() {
         .style("animation-timing-function", "ease-in");
 
     // ***** must do a deep copy right now it usses the same references and screws the rest of the code *****
-    // var currentTreeData = currentTree;
-    // BFS(currentTreeData, removeParentReferences);
+    var currentTreeData = JSON.parse(JSON.stringify(currentTree));
+    BFS(currentTreeData, removeParentReferences);
 
     // Backend ajax call to add a node to the current tree within the backend data
     $.ajax({
