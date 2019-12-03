@@ -2,17 +2,27 @@
 #tree-div{
     width: 100%;
     height: 760px;
+    align-content: center;
     border:1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
-/* The Hover Acion for Submitting New Tree Data */
+/* The Hover Acion for Submitting New Share Data */
 #submit:hover{
     background-color: lightgreen;
 }
 
+/* The Hover Acion for Submitting New Tree Data */
+#submit1:hover{
+    background-color: rgba(173, 236, 173, 0.815);
+}
+
 /* The Hover Action for Canceling New Tree Data Submission */
 #cancel:hover{
-    background-color: red;
+    background-color: rgba(243, 158, 158, 0.952);
 }
 
 /* The Card Preview Styling */
@@ -32,6 +42,7 @@ svg{
     overflow: visible;
     width: 100%;
     height: 100%;
+    display: block;
 }
 
 /* Each Tree Node Styling */
@@ -68,9 +79,16 @@ svg{
     left: 0;
     background-color: #111;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y:hidden;
     transition: 0.5s;
     padding-top: 60px;
+    padding-bottom: 50px;
+}
+
+#sideNavButtons{
+    overflow-y: auto;
+    overflow-x: hidden;
+    height:90%;
 }
 
 /* The Styling for the Modal Representing Card Information */
@@ -126,10 +144,23 @@ svg{
     padding: 16px;
 }
 
+#currentTreeShared{
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x:hidden;
+    right: 0%;
+}
+
+#currentTreeShared button{
+    float: right;
+}
+
 /* The Styling for the Share Side Navigation Bar */
 #shareNav {
+    white-space: nowrap;
     transition: margin-right .5s;
-    position: absolute;
+    position: fixed;
     left: 90%;
     top: 2%;
 }
@@ -197,9 +228,12 @@ svg{
 /* The Styling for the Create New Tree Popup Button */
 #create-tree{
     position: absolute;
-    left: 83%;
-    top: 2.8%;
-    
+    left: 5%;
+    bottom: 2.8%;
+    border-radius: 25px;
+    box-shadow: 0 0 5px black;
+    text-align: center;
+    background: white;
 }
 
 /* The Action Styling for the Create New Tree Popup Button */
@@ -211,8 +245,23 @@ svg{
 .newtreeform{
     position: absolute;
     display: none;
-    width: auto;
+    width: 90%;
     height: auto;
+    border-radius: 25px;
+    box-shadow: 0 0 5px black;
+    text-align: center;
+    background: white;
+    right:0;
+    padding: 5px;
+}
+/* The Styling for the Text Box for Entering New Tree Title */
+#titleText{
+    width: 25%
+}
+
+/* The Styling for the Text Box for Entering New Tree Description */
+#description{
+    width: 25%;
 }
 
 /* The Styling for the Share Tree Form */
@@ -221,6 +270,11 @@ svg{
     display: none;
     width: auto;
     height: auto;
+    border-radius: 25px;
+    box-shadow: 0 0 5px black;
+    text-align: center;
+    background: white;
+    padding: 5px;
 }
 
 /* The Styling for the Trees Shared Navigation Bar */
