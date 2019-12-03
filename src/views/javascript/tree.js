@@ -241,13 +241,23 @@ $.ajax({
             treeData = body.data;
             // For each tree in treeData find and show the available trees to view
             treeData.forEach(makeTreeButtons);
+                        
+            currentNode = treeData[0];
+            root = treeData[0];
+            currentTree = treeData[0];
+            root.x0 = 0;
+            root.y0 = width / 2;
+
+            // Finding the shared users on the initial tree
+            BFS(currentTree, findSharedTrees);
+            showSharedButtons();
+            update(root);
         }
     },
     error: function(xhr, err){
         console.log(xhr.responseText);
     }
 });
-
 
 // Generate the original tree diagram 
 var margin = { top: 100, right: 60, bottom: 20, left: 60 },
@@ -270,17 +280,6 @@ var svg = d3.select("#tree-div").append("svg")
     .attr("overflow", "visible")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-
-currentNode = treeData[0];
-root = treeData[0];
-currentTree = treeData[0];
-root.x0 = 0;
-root.y0 = width / 2;
-
-// Finding the shared users on the initial tree
-BFS(currentTree, findSharedTrees);
-showSharedButtons();
-update(root);
 
 // Prevents the default context menus from being available
 document.addEventListener('contextmenu', event => event.preventDefault());
@@ -581,7 +580,6 @@ function updateNodeInfo(d) {
     var Title = document.getElementById("title-span").innerText;
     var Description = document.getElementById("description-span").innerText;
     var newDueDate = document.getElementById("duedateinput").value
-    alert(newDueDate)
     currentNode.dueDate = newDueDate
     currentNode.title = Title
     currentNode.description = Description
