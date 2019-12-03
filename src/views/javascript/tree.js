@@ -667,21 +667,7 @@ function addNode() {
         "parent": currentNode.title,
         "children": [],
         "isComplete": false,
-        "_id": ''
     }
-    if (currentNode.children == null) {
-        newchildren = [];
-        currentNode.children = newchildren;
-    }
-    currentNode.children.push(newChild)
-    update(currentNode);
-    svg.selectAll("circle")
-        .filter(function (d) { return d._id === newId; })
-        .style("animation-delay", "1s")
-        .style("animation-name", "addblink")
-        .style("animation-iteration-count", "1")
-        .style("animation-duration", "2s")
-        .style("animation-timing-function", "ease-in");
 
     // ***** must do a deep copy right now it usses the same references and screws the rest of the code *****
     // var currentTreeData = JSON.parse(JSON.stringify(currentTree));
@@ -697,7 +683,21 @@ function addNode() {
             "tree" : newChild
         },
         success: function(body){
-            currentTree = body.data;
+            if (currentNode.children == null) {
+                newchildren = [body.data];
+                currentNode.children = newchildren;
+            }
+            else {
+                currentNode.children.push(body.data)
+            }
+            update(currentNode);
+            svg.selectAll("circle")
+                .filter(function (d) { return d._id === newId; })
+                .style("animation-delay", "1s")
+                .style("animation-name", "addblink")
+                .style("animation-iteration-count", "1")
+                .style("animation-duration", "2s")
+                .style("animation-timing-function", "ease-in");
         },
         error: function(xhr, err){
             alert(xhr.responseText);

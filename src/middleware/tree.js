@@ -125,7 +125,7 @@ router.post(
                         else {
                             res.status(201).json({
                                 message: 'New node added!',
-                                data: parent
+                                data: savedNode
                             });
                         }
                     }
