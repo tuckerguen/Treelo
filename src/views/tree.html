@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto|Lobster|Lato&display=swap" rel="stylesheet">
     <!-- The Corresponding CSS styling -->
-    <link rel="stylesheet" href="tree.css" />
+    <link rel="stylesheet" href="css/tree.css" />
     <!-- For Jquery Code -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!-- For the Modal -->
@@ -42,6 +42,7 @@
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <div id = "create-footer">    
         <br><button type="button" id="create-tree" onClick="showNewTreePopup(event)">Create New Tree</button>
+        <br><button type="button" id="show-quickstart" onClick="showquickstart()">Need Help?</button>
     </div> 
     </div>
     <div id="title">
@@ -133,7 +134,7 @@
 
     <!-- load the d3.js library and TreeJS file-->
     <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="/tree.js"></script>
+    <script src="javascript/tree.js"></script>
 
 </body>
 </html>
