@@ -246,7 +246,7 @@ $.ajax({
         }
     },
     error: function(xhr, err){
-        alert(xhr.responseText);
+        console.log(xhr.responseText);
     }
 });
 
@@ -487,7 +487,7 @@ function deleteTree(d) {
                     console.log(body);
                 },
                 error: function(xhr, err){
-                    alert(xhr.responseText);
+                    console.log(xhr.responseText);
                 }
             });
             delete treeData[i];
@@ -539,7 +539,7 @@ function makeNewData() {
                 closeNewTreePopup();
             },
             error: function(xhr, err){
-                alert(xhr.responseText);
+                console.log(xhr.responseText);
             }
         });  
     }
@@ -549,7 +549,7 @@ function makeNewData() {
 function removeNode(d) {
     if (currentNode.parent == null) {
         $("#" + currentNode._id).hide();
-        //alert(currentNode._id)
+        console.log(currentNode._id)
         deleteTree()
     }
     else {
@@ -572,7 +572,7 @@ function removeNode(d) {
             url: "/trees/" + currentNode._id,
             async: true,
             error: function(xhr, err){
-                alert(xhr.responseText);
+                console.log(xhr.responseText);
             }
         });
     }
@@ -603,7 +603,7 @@ function updateNodeInfo(d) {
             currentNode = body.data;
         },
         error: function(xhr, err){
-            alert(xhr.responseText);
+            console.log(xhr.responseText);
         }
     });
 }
@@ -649,7 +649,7 @@ function shareTree() {
                 currentNode = body.data;
             },
             error: function(xhr, err){
-                alert(xhr.responseText);
+                console.log(xhr.responseText);
             }
         });
     }
@@ -700,7 +700,7 @@ function addNode() {
                 .style("animation-timing-function", "ease-in");
         },
         error: function(xhr, err){
-            alert(xhr.responseText);
+            console.log(xhr.responseText);
         }
     });
 }
