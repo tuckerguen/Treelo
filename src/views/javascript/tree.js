@@ -548,7 +548,6 @@ function makeNewData() {
 function removeNode(d) {
     if (currentNode.parent == null) {
         $("#" + currentNode._id).hide();
-        console.log(currentNode._id)
         deleteTree()
     }
     else {
@@ -581,6 +580,9 @@ function removeNode(d) {
 function updateNodeInfo(d) {
     var Title = document.getElementById("title-span").innerText;
     var Description = document.getElementById("description-span").innerText;
+    var newDueDate = document.getElementById("duedateinput").value
+    alert(newDueDate)
+    currentNode.dueDate = newDueDate
     currentNode.title = Title
     currentNode.description = Description
     $('#myModal').modal("toggle");
@@ -725,18 +727,47 @@ function setFocusNode() {
     }
 }
 
-// Marks a card as complete updating its status and color
-function markDone() {
-    svg.selectAll("circle")
-        .filter(function (d) { if (d._id === currentNode._id) { d.isComplete = true; } return d._id === currentNode._id; })
-        .style("animation-name", "doneblink")
-        .style("animation-iteration-count", "1")
-        .style("animation-duration", "2s")
-        .style("animation-timing-function", "ease-in")
-    svg.selectAll("circle")
-        .filter(function (d) { if (d._id === currentNode._id) { d.isComplete = true; } return d._id === currentNode._id; })
-        .style("fill", "lightgreen");
-    $('#myModal').modal("toggle");
+// Marks a card as complete or incomplete updating its status and color
+function toggleDone() {
+    if(currentNode.isComplete === false){
+        svg.selectAll("circle")
+            .filter(function (d) { if (d._id === currentNode._id) { d.isComplete = true; } return d._id === currentNode._id; })
+            .style("animation-name", "doneblink")
+            .style("animation-iteration-count", "1")
+            .style("animation-duration", "2s")
+            .style("animation-timing-function", "ease-in")
+        svg.selectAll("circle")
+            .filter(function (d) { if (d._id === currentNode._id) { d.isComplete = true; } return d._id === currentNode._id; })
+            .style("fill", "lightgreen");
+        $('#myModal').modal("toggle");
+    }
+    else{
+        svg.selectAll("circle")
+            .filter(function (d) { if (d._id === currentNode._id) { d.isComplete = false; } return d._id === currentNode._id; })
+            .style("animation-name", "none")
+            .style("animation-iteration-count", "none")
+            .style("animation-duration", "none")
+            .style("animation-timing-function", "none")
+        svg.selectAll("circle")
+            .filter(function (d) { if (d._id === currentNode._id) { d.isComplete = false; } return d._id === currentNode._id; })
+            .style("fill", "white");
+        $('#myModal').modal("toggle");
+    }
+}
+
+// Unshares a tree with another users
+function unShare(index, userEmail){
+    if(currentNode.sharedUsers[index] === userEmail){
+        delete currentNode.sharedUsers[index]
+        var removingNulls = currentNode.sharedUsers.filter(function (a) {
+            return a != null;
+        });
+        currentNode.sharedUsers = removingNulls;
+        $('#myModal').modal("toggle");
+    }
+    else{
+        alert('Could not find user to delete')
+    }
 }
 
 // **************************_____________User Action Functions_____________**************************
@@ -744,11 +775,13 @@ function markDone() {
 function dblclick(d) {
     document.getElementById("description-span").innerHTML = d.description;
     document.getElementById("title-span").innerHTML = d.title;
+    document.getElementById("duedateinput").value = d.dueDate
     currentNode = d;
     var people = "";
     if(currentNode.sharedUsers != null){
         for (var i = 0; i < currentNode.sharedUsers.length; i++) {
             people += (currentNode.sharedUsers[i]);
+            people += "<span style=" + '"' + "font-size:20px;cursor:pointer" + '"' + "onclick=" + '"' + "unShare("+ i + ",'" + currentNode.sharedUsers[i] + "')" + '"' + ">&times;</span>"
             if (currentNode.sharedUsers[i + 1] != null) {
                 people += "<br>"
             }
@@ -758,6 +791,12 @@ function dblclick(d) {
         currentNode.sharedUsers = [];
     }
     document.getElementById("members").innerHTML = people;
+    if(currentNode.isComplete){
+        $('#myModal').css("background", "rgba(0,255,0,.1)");
+    }
+    else{
+        $('#myModal').css("background", "rgba(255,0,0,.1)");
+    }
     $('#myModal').modal("toggle");
 }
 
