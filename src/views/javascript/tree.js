@@ -886,6 +886,10 @@ function closeNewTreePopup() {
     newTreePopup.style.display = 'none';
 }
 
+function showQuickstart(){
+    window.location.href = "QuickStart.html";
+}
+
 // Displays the new tree form popup
 function showNewTreePopup(event) {
     $('#newtreeform').css({
