@@ -235,7 +235,7 @@ var treeData =
 $.ajax({
     method: "GET",
     url: "/trees/data",
-    async: false,
+    async: true,
     success: function(body){
         if(body.data.length != 0) {
             treeData = body.data;
@@ -594,7 +594,7 @@ function updateNodeInfo(d) {
     $.ajax({
         method: "PUT",
         url: "/trees/details/" + currentNode._id,
-        async: false,
+        async: true,
         data: {
             "node" : currentNodeData
         },
@@ -633,6 +633,9 @@ function removeParentReferences(tree){
 function shareTree() {
     var userName =
         document.getElementById("shared-with").value;
+    if(currentNode.sharedUsers != null || currentNode.sharedUsers != undefined){
+        currentNode.sharedUsers = [];
+    }
     if (!currentNode.sharedUsers.includes(userName) && userName != null && userName != "") {
         currentNode.sharedUsers.push(userName);
         var currentNodeData = currentNode;
@@ -640,7 +643,7 @@ function shareTree() {
         $.ajax({
             method: "PUT",
             url: "/trees/details/" + currentNode._id,
-            async: false,
+            async: true,
             data: {
                 "node" : currentNodeData
             },
