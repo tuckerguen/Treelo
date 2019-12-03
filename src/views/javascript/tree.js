@@ -69,8 +69,6 @@ var BFSQueue = [];
 var sharedUsersToDisplay = [];
 // An array containing the start nodes that each shared users can see
 var sharedUsersToDisplayNodes = [];
-// Stores the oldRoot of the last viewed tree
-var oldRoot;
 
 // Fake Tree Data for frontedn Testing Purposes 
 var treeData = 
@@ -252,9 +250,9 @@ $.ajax({
 
 
 // Generate the original tree diagram 
-var margin = { top: 100, right: 60, bottom: 20, left: 100 },
-    width = 750 - margin.right - margin.left,
-    height = 1800 - margin.top - margin.bottom;
+var margin = { top: 100, right: 60, bottom: 20, left: 60 },
+    width = $(window).height()/1.5 - margin.right - margin.left,
+    height = $(window).width() - margin.top - margin.bottom;
 
 var i = 0;
 
@@ -304,7 +302,7 @@ window.onclick = closeContextMenus;
 function findTree(d) {
     $("#return-focus").hide();
     treeData.forEach(findMatchingID)
-    displayTree(foundTreeForRender);
+    displayTree(foundTreeForRender, false);
     BFS(currentTree, findSharedTrees);
     showSharedButtons();
 }
@@ -318,19 +316,20 @@ function findMatchingID(item) {
 
 // Makes and Displays the Buttons corresponding to each tree a user can view
 function makeTreeButtons(item, index) {
-    document.getElementById("mySidenav").innerHTML += "<br><button id = " + '"' + item._id + '"' + "onClick = findTree()>" + item.title + "</button>";
+    document.getElementById("sideNavButtons").innerHTML += "<br><button id = " + '"' + item._id + '"' + "onClick = findTree()>" + item.title + "</button>";
 }
 
 // Displays a tree from a certain point.
 // Param data: the node from which to display the tree
-function displayTree(data) {
+// Param isShareView: tells the function whether or not to 
+// reset and reproduce the shared tree buttons
+function displayTree(data, isShareView) {
     currentTree = data;
     root = data;
-    oldRoot = currentNode;
     root.x0 = 0;
     root.y0 = width / 2;
     // If we switched trees update the shared users accordingly
-    if (oldRoot._id != root._id) {
+    if(!isShareView){
         sharedUsersToDisplay = [];
         sharedUsersToDisplayNodes = [];
     }
@@ -383,7 +382,7 @@ function displaySharedPortion(d) {
     $("#return-focus").hide();
     var index = sharedUsersToDisplay.indexOf(d.id);
     currentNode = sharedUsersToDisplayNodes[index]
-    displayTree(sharedUsersToDisplayNodes[index])
+    displayTree(sharedUsersToDisplayNodes[index], true)
     $("#return-focus").show();
     $("#shareFooter").show();
 }
@@ -505,7 +504,7 @@ function deleteTree(d) {
             "title": "Make a new Treelo Tree using the buttons below or open an existing tree with the Navigation Bar!"
         }];
     root = defaultData[0];
-    displayTree(root);
+    displayTree(root, false);
 }
 
 // Making a new tree from the form in HTML taking input and due date
@@ -534,7 +533,7 @@ function makeNewData() {
             },
             success: function(body){
                 treeData.push([body.data]);
-                displayTree(body.data);
+                displayTree(body.data, false);
                 document.getElementById("mySidenav").innerHTML += "<br><button id = " + '"' + body.data._id + '"' + "onClick = findTree()>" + body.data.title + "</button>";
                 closeNewTreePopup();
             },
@@ -620,7 +619,7 @@ function returnFromFocus() {
     while (currentNode.parent != null) {
         currentNode = currentNode.parent;
     }
-    displayTree(currentNode);
+    displayTree(currentNode, false);
     $("#return-focus").hide();
     $("#shareFooter").hide();
 }
@@ -707,15 +706,20 @@ function addNode() {
 
 // Sets the current node to the root of the tree in a 'focused' view
 function setFocusNode() {
-    svg.selectAll("circle")
-        .filter(function (d) { return d._id === currentNode._id; })
-        .style("animation-delay", "1s")
-        .style("animation-name", "focusblink")
-        .style("animation-iteration-count", "1")
-        .style("animation-duration", "2s")
-        .style("animation-timing-function", "ease-in")
-    displayTree(currentNode)
-    $("#return-focus").show();
+    if(root._id != currentNode._id){
+        svg.selectAll("circle")
+            .filter(function (d) { return d._id === currentNode._id; })
+            .style("animation-delay", "1s")
+            .style("animation-name", "focusblink")
+            .style("animation-iteration-count", "1")
+            .style("animation-duration", "2s")
+            .style("animation-timing-function", "ease-in")
+        displayTree(currentNode, false)
+        $("#return-focus").show();
+    }
+    else{
+        alert("That Node is Already the Focus")
+    }
 }
 
 // Marks a card as complete updating its status and color
@@ -845,18 +849,33 @@ function closeNewTreePopup() {
 // Displays the new tree form popup
 function showNewTreePopup(event) {
     $('#newtreeform').css({
-        'top': '10%',
-        'left': '90%',
-        'display': 'block'
+        'display': 'block',
+        'bottom': '5px',
+        'right': '5%',
+        'opacity': "0",
+        'animation-delay': "0s",
+        'animation-name': "fadein",
+        'animation-iteration-count': "1",
+        'animation-timing-fcuntion' : "ease-in",
+        'animation-duration': "1s",
+        'animation-fill-mode': "forwards",
     });
+    closeNav();
 }
 
 // Opens the share tree menu
-function openShareMenu() {
+function openShareMenu(event) {
     $('#sharetreeform').css({
-        'top': '10%',
-        'left': '75%',
-        'display': 'block'
+        'display': 'block',
+        'top': event.pageY + -100 + 'px',
+        'left': event.pageX + 'px',
+        'opacity': "0",
+        'animation-delay': "0s",
+        'animation-name': "fadein",
+        'animation-iteration-count': "1",
+        'animation-timing-fcuntion' : "ease-in",
+        'animation-duration': "1s",
+        'animation-fill-mode': "forwards"
     });
 }
 
