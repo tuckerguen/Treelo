@@ -21,7 +21,7 @@ function getUserProfile(req){
     };
     
     try{
-        const { _raw, _json, ...userProfile } = (req.user && /**!process.env.TESTING === 'TRUE'*/true) ? req.user : testUser;  
+        const { _raw, _json, ...userProfile } = (req.user && !(process.env.TESTING === 'TRUE')) ? req.user : testUser;  
         var emails = userProfile.emails.map((email) => {
             return email.value;
         });
@@ -33,8 +33,19 @@ function getUserProfile(req){
         console.log(err);
         throw "No user defined for request"
     }
-
 }
+
+router.get(
+    '/user', 
+    secure.secured, 
+    (req, res) => {
+        console.log(req);
+        //Get user's data
+        var user = getUserProfile(req);
+        res.json({
+            userProfile: user
+        });
+});
 
 router.get(
     '/',
@@ -89,7 +100,6 @@ router.post(
     (req, res) => {
         var user = getUserProfile(req);
         var reqNode = req.body.tree;
-        console.log(reqNode);
         var parentId = req.params.parentId.toString();
 
         console.log('saving new node to: ' + parentId);
@@ -139,7 +149,7 @@ router.put(
     '/details/:nodeId',
     secure.secured,
     (req, res) => {
-        console.log('updating: ' + req.params.nodeId);
+        console.log('updating: node with id: ' + req.params.nodeId);
         NodeModel.findByIdAndUpdate(
             req.params.nodeId,
             req.body.node,
@@ -168,7 +178,6 @@ router.get(
         user = getUserProfile(req);
         console.log('finding trees for: ' + user.emails[0]);
         findTrees(user).then((trees) => {
-            console.log(trees);
             if(trees instanceof Error){
                 res.status(400).json({
                     status: 'error',
@@ -191,7 +200,7 @@ router.get(
     '/:nodeId',
     secure.secured,
     (req, res) => {
-        console.log('finding root: ' + req.params.nodeId);
+        console.log('finding node with id: ' + req.params.nodeId);
         var user = getUserProfile(req);
         findTree(req.params.nodeId, user).then((tree) => {
             if(tree instanceof Error){
@@ -254,7 +263,6 @@ router.delete(
             ownerEmail: { $in : user.emails }
         }, 
         function (err, node) {
-            console.log('deleted: ' + node);
             if (err) {
                 res.status(400).send(err);
             }
@@ -272,17 +280,5 @@ router.delete(
         });
     }
 );
-
-router.get(
-    "/user", 
-    secure.secured, 
-    (req, res, next) => {
-        //Get user's data
-        var user = getUserProfile(req);
-        res.render("user", {
-            title: "Profile",
-            userProfile: user
-        });
-});
 
 module.exports = router;

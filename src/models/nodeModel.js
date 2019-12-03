@@ -61,7 +61,6 @@ NodeSchema
 
     
 NodeSchema.post('findOneAndDelete', function(doc) {
-    console.log('doc: ' + doc);
     var children = doc.children;
     if(children.length != 0){
         this.model.deleteMany({_id : {$in : children }},

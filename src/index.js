@@ -21,12 +21,23 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 //DB Setup
-mongoose.connect('mongodb://localhost/treelo', { useNewUrlParser: true});
-var db = mongoose.connection;
-if(!db)
-    console.log("Error connecting db")
-else
-    console.log("Db connected successfully")
+if(process.env.TESTING === 'TRUE'){
+    mongoose.connect('mongodb://localhost/treeloTest', { useNewUrlParser: true});
+    var db = mongoose.connection;
+    if(!db)
+        console.log("Error connecting db")
+    else
+        console.log("Test Db connected successfully")
+}
+else {
+    mongoose.connect('mongodb://localhost/treelo', { useNewUrlParser: true});
+    var db = mongoose.connection;
+    if(!db)
+        console.log("Error connecting db")
+    else
+        console.log("Production Db connected successfully")
+}
+
 
 // Setup  port
 var port = process.env.PORT || 8080;
