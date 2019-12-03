@@ -56,8 +56,28 @@ var autoPopulateChildren = function(next) {
 };
 
 NodeSchema
-.pre('findOne', autoPopulateChildren)
-.pre('find', autoPopulateChildren)
+    .pre('findOne', autoPopulateChildren)
+    .pre('find', autoPopulateChildren);
+
+    
+NodeSchema.post('findOneAndDelete', function(node) {
+    console.log('hook called');
+    if(node.children.length != 0){
+        var queries = [];
+        Array.prototype.forEach.call(node.children, function(child){
+            console.log('deleting child: ' + child._id);
+            queries.push(
+                this.model.findOneAndDelete({_id: child._id}, function(err, node){
+                    if(err){
+                        console.log(err);
+                    }
+                })
+            );
+        });
+        return Promise.all(queries);
+        // this.model.deleteMany({_id : {$in: node.children}});
+    };
+});
 
 // Export Tree model
 var Node = module.exports = mongoose.model('Node', NodeSchema);

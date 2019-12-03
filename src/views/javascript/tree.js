@@ -241,15 +241,15 @@ $.ajax({
     success: function(body){
         if(body.data.length != 0) {
             treeData = body.data;
+            // For each tree in treeData find and show the available trees to view
+            treeData.forEach(makeTreeButtons);
         }
     },
     error: function(xhr, err){
-        // alert(xhr.responseText);
+        alert(xhr.responseText);
     }
-  });
+});
 
-// For each tree in treeData find and show the available trees to view
-treeData.forEach(makeTreeButtons);
 
 // Generate the original tree diagram 
 var margin = { top: 100, right: 60, bottom: 20, left: 100 },
@@ -479,6 +479,17 @@ function deleteTree(d) {
     // Remove the tree from the given JSON data
     for (var i = 0; i < treeData.length; i++) {
         if (currentNode._id == treeData[i]._id) {
+            $.ajax({
+                method: "DELETE",
+                url: "/trees/" + treeData[i]._id,
+                async: true,
+                success: function(body){
+                    console.log(body);
+                },
+                error: function(xhr, err){
+                    alert(xhr.responseText);
+                }
+            });
             delete treeData[i];
         }
     }
@@ -504,34 +515,33 @@ function makeNewData() {
     var Description =
         document.getElementById("description").value;
     if (Title != "" && Description != "") {
-        var data = [{
+        var newTree = {
             "title": Title,
             "parent": null,
             "description": Description,
             "children": [],
-            "_id": Math.random() + "",
             "isComplete": false,
             "sharedUsers": []
-        }]
-        treeData.push(data[0])
-        displayTree(data[0])
-        document.getElementById("mySidenav").innerHTML += "<br><button id = " + '"' + data[0]._id + '"' + "onClick = findTree()>" + data[0].title + "</button>";
-        closeNewTreePopup();
+        };
+
         // Backend call to create a new tree within the backend 
         $.ajax({
             method: "POST",
-            url: "/trees",
-            async: false,
+            url: "/trees/newTree",
+            async: true,
             data: {
-                "tree" : data[0]
+                "tree" : newTree
             },
-            success: function(data){
-                console.log(data);
+            success: function(body){
+                treeData.push([body.data]);
+                displayTree(body.data);
+                document.getElementById("mySidenav").innerHTML += "<br><button id = " + '"' + body.data._id + '"' + "onClick = findTree()>" + body.data.title + "</button>";
+                closeNewTreePopup();
             },
             error: function(xhr, err){
-                // alert(xhr.responseText);
+                alert(xhr.responseText);
             }
-      });
+        });  
     }
 }
 
@@ -539,7 +549,7 @@ function makeNewData() {
 function removeNode(d) {
     if (currentNode.parent == null) {
         $("#" + currentNode._id).hide();
-        alert(currentNode._id)
+        //alert(currentNode._id)
         deleteTree()
     }
     else {
@@ -557,6 +567,14 @@ function removeNode(d) {
             returnFromFocus()
         }
         update(currentNode.parent)
+        $.ajax({
+            method: "DELETE",
+            url: "/trees/" + currentNode._id,
+            async: true,
+            error: function(xhr, err){
+                alert(xhr.responseText);
+            }
+        });
     }
 }
 
@@ -569,7 +587,25 @@ function updateNodeInfo(d) {
     $('#myModal').modal("toggle");
     update(currentNode);
     svg.selectAll("text")
-        .text(function (d) { return d.title; })
+        .text(function (d) { return d.title; });
+
+    var currentNodeData = currentNode;
+    BFS(currentNodeData, removeParentReferences);
+
+    $.ajax({
+        method: "PUT",
+        url: "/trees/details/" + currentNode._id,
+        async: false,
+        data: {
+            "node" : currentNodeData
+        },
+        success: function(body){
+            currentNode = body.data;
+        },
+        error: function(xhr, err){
+            alert(xhr.responseText);
+        }
+    });
 }
 
 // Returns from the focus view to the entire tree view for the current tree
@@ -600,6 +636,22 @@ function shareTree() {
         document.getElementById("shared-with").value;
     if (!currentNode.sharedUsers.includes(userName) && userName != null && userName != "") {
         currentNode.sharedUsers.push(userName);
+        var currentNodeData = currentNode;
+        BFS(currentNodeData, removeParentReferences);
+        $.ajax({
+            method: "PUT",
+            url: "/trees/details/" + currentNode._id,
+            async: false,
+            data: {
+                "node" : currentNodeData
+            },
+            success: function(body){
+                currentNode = body.data;
+            },
+            error: function(xhr, err){
+                alert(xhr.responseText);
+            }
+        });
     }
     closeShareMenu();
     returnFromFocus();
@@ -615,7 +667,7 @@ function addNode() {
         "parent": currentNode.title,
         "children": [],
         "isComplete": false,
-        "_id": newId
+        "_id": ''
     }
     if (currentNode.children == null) {
         newchildren = [];
@@ -632,22 +684,23 @@ function addNode() {
         .style("animation-timing-function", "ease-in");
 
     // ***** must do a deep copy right now it usses the same references and screws the rest of the code *****
-    var currentTreeData = JSON.parse(JSON.stringify(currentTree));
-    BFS(currentTreeData, removeParentReferences);
+    // var currentTreeData = JSON.parse(JSON.stringify(currentTree));
+    var currentChild = newChild;
+    BFS(newChild, removeParentReferences);
 
     // Backend ajax call to add a node to the current tree within the backend data
     $.ajax({
-        method: "PUT",
-        url: "/trees/" + currentTree._id,
-        async: false,
+        method: "POST",
+        url: "/trees/addNode/" + currentNode._id,
+        async: true,
         data: {
-            "tree" : currentTreeData
+            "tree" : newChild
         },
-        success: function(data){
-            console.log(data);
+        success: function(body){
+            currentTree = body.data;
         },
         error: function(xhr, err){
-            // alert(xhr.responseText);
+            alert(xhr.responseText);
         }
     });
 }

@@ -4,3 +4,4 @@ src/.eslintrc
 src/auth0login.txt
 src/views/user.pug
 src/test/testSecurity.js
+src/Oldthings
