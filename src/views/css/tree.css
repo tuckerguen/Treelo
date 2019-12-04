@@ -30,13 +30,14 @@
 /* The Card Preview Styling */
 #card-preview{
     position: fixed;
-    height: 10%;
-    width: 10%;
+    height: 15%;
+    width: 20%;
     border-radius: 25px;
     overflow: hidden;
     box-shadow: 0 0 5px black;
     text-align: center;
     background: white;
+    padding: 10px;
 }
 
 /* The Styling for the Section Holding the Tree Diagram */
@@ -93,12 +94,15 @@ svg text{
     padding-top: 60px;
     padding-bottom: 50px;
     box-shadow: 0 0 15px black;
+    text-align: center;
 }
 
 #sideNavButtons{
     overflow-y: auto;
     overflow-x: hidden;
-    height:90%;
+    height:80%;
+    display:inline-block;
+    width: 100%;
 }
 
 /* The Styling for the Modal Representing Card Information */
@@ -292,25 +296,25 @@ svg text{
   
 /* The Styling for the New Tree Form */
 .newtreeform{
-    position: absolute;
     display: none;
-    width: 90%;
+    margin-left: auto;
+    margin-right:auto;
+    width: 50%;
     height: auto;
     border-radius: 25px;
     box-shadow: 0 0 5px black;
     text-align: center;
     background: white;
-    right:0;
-    padding: 5px;
+    padding: 10px;
 }
 /* The Styling for the Text Box for Entering New Tree Title */
 #titleText{
-    width: 25%
+    width: 300px;
 }
 
 /* The Styling for the Text Box for Entering New Tree Description */
 #description{
-    width: 25%;
+    width: 500px;
 }
 
 /* The Styling for the Share Tree Form */

@@ -721,16 +721,24 @@ function click(d) {
 // **************************_____________Hiding/Displaying Menus Functions_____________**************************
 // Opens the card preview for each node when a user is hovered over
 function cardPreview(d) {
-    document.getElementById("card-preview").innerHTML = d.title + "<br><br>" + "  Description:<br/>   " + d.description;
+    var date = new Date(d.dueDate)
+    if(isNaN(date.getMonth())){
+        date = "No Due Date"
+    }
+    else {
+        date = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear();
+    }
+    
+    
+    document.getElementById("card-preview").innerHTML = "<strong>Description:</strong> <br>" + d.description.substring(0,100) + '...<br><br><strong>' + date + "</strong>";
     $('#card-preview').css({
-        'top': event.pageY + -30 + 'px',
-        'left': event.pageX + 50 + 'px',
+        'top': event.pageY + 'px',
+        'left': event.pageX + 'px',
         'display': 'block',
         'opacity': "0",
         'animation-delay': ".5s",
         'animation-name': "fadein",
         'animation-iteration-count': "1",
-        'animation-timing-fcuntion' : "ease-in",
         'animation-duration': "1s",
         'animation-fill-mode': "forwards"
     });
@@ -739,11 +747,13 @@ function cardPreview(d) {
 // Closes the card preview display
 function closePreview(d) {
     $('#card-preview').hide()
-        .style("animation-delay", "none")
-        .style("animation-name", "none")
-        .style("animation-iteration-count", "none")
-        .style("animation-duration", "none")
-        .style("animation-timing-function", "none");
+    $('#card-preview').css({
+        'animation-delay': "none",
+        'animation-name': "none",
+        'animation-iteration-count': "none",
+        'animation-duration': "none",
+        'animation-fill-mode': "none"
+    })
 }
 
 // Opens the tree navigation bar
@@ -786,7 +796,7 @@ function closeNewTreePopup() {
     newTreePopup.style.display = 'none';
 }
 
-function showQuickstart(){
+function showquickstart(){
     window.location.href = "QuickStart.html";
 }
 
