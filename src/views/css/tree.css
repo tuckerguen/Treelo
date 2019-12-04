@@ -322,15 +322,16 @@ svg text{
     width: 0;
     position: fixed;
     z-index: 1;
-    top: 77px;
+    top: 80px;
     right: 0;
     border-radius:0px 0px 0px 25px;
-    background-color:  rgb(0, 113, 179); 
+    border: 0px solid black;
+    background-color:  white;
     overflow-x: hidden;
     overflow-y: auto;
     transition: 0.5s;
     padding-top: 60px;
-    box-shadow: 0 0 10px black;
+    box-shadow: -3px 3px 2px  rgb(87, 87, 87);
 
     /*BEN*/
     /* height: 100%;
@@ -370,6 +371,7 @@ svg text{
     left: 25px;
     font-size: 36px;
     margin-right: 50px;
+    color: rgb(0, 113, 179); 
 }
 
 /* Styling for Each Button Within the Trees Shared Side Navigation Bar */
@@ -507,6 +509,26 @@ svg text{
         opacity: 1;
         r:10;
         fill: rgb(228, 176, 81);
+    }
+    75%{
+        r:15;
+    }
+    100%{
+        r:10;
+        }
+}
+
+@keyframes shareblink{
+    0%{
+        r: 10;
+    }
+    25%{
+        r:15;
+    }
+    50%{
+        opacity: 1;
+        r:10;
+        fill: green;
     }
     75%{
         r:15;

@@ -69,167 +69,8 @@ var BFSQueue = [];
 var sharedUsersToDisplay = [];
 // An array containing the start nodes that each shared users can see
 var sharedUsersToDisplayNodes = [];
-
-// Fake Tree Data for frontedn Testing Purposes 
-var treeData = 
-[
-    {
-        "sharedUsers": [
-            "janedoe@gmail.com",
-        ],
-        "children": [
-            {
-                "title": "Child1",
-                "description": "child 1 description",
-                "dueDate": "",
-                "owner": "johndoe@gmail.com",
-                "sharedUsers": [
-                    "janedoe@gmail.com",
-                    "benbaierl@case.edu"
-                ],
-                "isComplete": false,
-                "isOverdue": false,
-                "children": []
-            }
-        ],
-        "_id": "5daf8c0d73afd05a10c15331",
-        "dueDate": null,
-        "title": "Test title 1",
-        "description": "test description",
-        "owner": "johndoe@gmail.com",
-        "isComplete": false,
-        "isOverdue": false,
-        "__v": 0
-    },
-    {
-        "sharedUsers": [
-            "janedoe@gmail.com",
-            "benbaierl@case.edu"
-        ],
-        "children": [
-            {
-                "title": "Child1",
-                "description": "child 2 description",
-                "dueDate": "",
-                "owner": "johndoe@gmail.com",
-                "sharedUsers": [
-                    "janedoe@gmail.com",
-                    "benbaierl@case.edu",
-                    "johnny@aol.com"
-                ],
-                "isComplete": false,
-                "isOverdue": false,
-                "children": [{
-                    "sharedUsers": [
-                        "janedoe@gmail.com",
-                        "benbaierl@case.edu"
-                    ],
-                    "children": [
-                        {
-                            "title": "Child1",
-                            "description": "child 2 description",
-                            "dueDate": "",
-                            "owner": "johndoe@gmail.com",
-                            "sharedUsers": [
-                                "janedoe@gmail.com",
-                                "benbaierl@case.edu"
-                            ],
-                            "isComplete": false,
-                            "isOverdue": false,
-                            "children": []
-                        },
-                        {
-                            "sharedUsers": [
-                                "janedoe@gmail.com",
-                                "benbaierl@case.edu"
-                            ],
-                            "children": [
-                                {
-                                    "title": "Child1",
-                                    "description": "child 2 description",
-                                    "dueDate": "",
-                                    "owner": "johndoe@gmail.com",
-                                    "sharedUsers": [
-                                        "janedoe@gmail.com",
-                                        "benbaierl@case.edu"
-                                    ],
-                                    "isComplete": false,
-                                    "isOverdue": false,
-                                    "children": []
-                                }
-                            ],
-                            "_id": "5daf8c0d73afd051sd",
-                            "dueDate": null,
-                            "title": "Test title 2",
-                            "description": "test description",
-                            "owner": "johndoe@gmail.com",
-                            "isComplete": false,
-                            "isOverdue": false,
-                            "__v": 0
-                        }
-                    ],
-                    "_id": "5daf8c0d73afd051dd",
-                    "dueDate": null,
-                    "title": "Test title 2",
-                    "description": "test description",
-                    "owner": "johndoe@gmail.com",
-                    "isComplete": false,
-                    "isOverdue": false,
-                    "__v": 0
-                }]
-            }
-        ],
-        "_id": "5daf8c0d73afd051ddhg",
-        "dueDate": null,
-        "title": "Test title 2",
-        "description": "test description",
-        "owner": "johndoe@gmail.com",
-        "isComplete": false,
-        "isOverdue": false,
-        "__v": 0
-    },
-    {
-        "sharedUsers": [
-            "janedoe@gmail.com",
-            "benbaierl@case.edu"
-        ],
-        "children": [
-            {
-                "title": "Child1",
-                "description": "child 1 description",
-                "dueDate": "",
-                "owner": "johndoe@gmail.com",
-                "sharedUsers": [
-                    "janedoe@gmail.com",
-                    "benbaierl@case.edu"
-                ],
-                "isComplete": false,
-                "isOverdue": false,
-                "children": [{
-                    "title": "Child1",
-                    "description": "child 1 description",
-                    "dueDate": "",
-                    "owner": "johndoe@gmail.com",
-                    "sharedUsers": [
-                        "janedoe@gmail.com",
-                        "benbaierl@case.edu"
-                    ],
-                    "isComplete": false,
-                    "isOverdue": false,
-                    "children": []
-                }]
-            }
-        ],
-        "_id": "5daf8c0d73afd05a10c15331asdfsadf",
-        "dueDate": null,
-        "title": "Test title 3",
-        "description": "test description",
-        "owner": "johndoe@gmail.com",
-        "isComplete": false,
-        "isOverdue": false,
-        "__v": 0
-    }
-];
+//Current logged in userl
+var currentUser;
 
 // The backend ajax call to get all the trees that a user can view
 $.ajax({
@@ -253,6 +94,19 @@ $.ajax({
             showSharedButtons();
             update(root);
         }
+    },
+    error: function(xhr, err){
+        console.log(xhr.responseText);
+    }
+});
+
+// The backend ajax call to get all the trees that a user can view
+$.ajax({
+    method: "GET",
+    url: "/trees/user",
+    async: true,
+    success: function(body){
+        currentUser = body.userProfile.emails[0];
     },
     error: function(xhr, err){
         console.log(xhr.responseText);
@@ -344,7 +198,7 @@ function displayTree(data, isShareView) {
 function findSharedTrees(thisTree){
     if (thisTree.sharedUsers != null && thisTree.sharedUsers != []) {
         for (var i = 0; i < thisTree.sharedUsers.length; i++) {
-            if (!sharedUsersToDisplay.includes(thisTree.sharedUsers[i])) {
+            if (!sharedUsersToDisplay.includes(thisTree.sharedUsers[i]) && currentUser != thisTree.sharedUsers[i]) {
                 sharedUsersToDisplayNodes.push(thisTree);
                 sharedUsersToDisplay.push(thisTree.sharedUsers[i]);
             }
@@ -410,7 +264,7 @@ function update(source) {
     // Append the circles 
     nodeEnter.append("circle")
         .attr("r", 10)
-        .style("fill", function (d) { if (d.isComplete === false || d.isComplete == "false") { return d._children ? "lightsteelblue" : "#fff"; } else { return "black" } });
+        .style("fill", function (d) { if (d.isComplete === false || d.isComplete == "false") { return d._children ? "lightsteelblue" : "#fff"; } else { return "lightgreen" } });
     // Append title text to the nodes
     nodeEnter.append("text")
         .attr("y", function (d) {
@@ -579,7 +433,8 @@ function removeNode(d) {
 function updateNodeInfo(d) {
     var Title = document.getElementById("title-span").innerText;
     var Description = document.getElementById("description-span").innerText;
-    var newDueDate = document.getElementById("duedateinput").value
+    var newDueDate = document.getElementById("duedateinput").value;
+
     currentNode.dueDate = newDueDate
     currentNode.title = Title
     currentNode.description = Description
@@ -631,10 +486,9 @@ function removeParentReferences(tree){
 
 // Shares a tree from the current node with a specified user
 function shareTree() {
-    var userName =
-        document.getElementById("shared-with").value;
-    if(currentNode.sharedUsers != null || currentNode.sharedUsers != undefined){
-        currentNode.sharedUsers = [];
+    var userName = document.getElementById("shared-with").value;
+    if(currentNode.sharedUser == null){
+        currentNode.sharedUser = [];
     }
     if (!currentNode.sharedUsers.includes(userName) && userName != null && userName != "") {
         currentNode.sharedUsers.push(userName);
@@ -656,7 +510,13 @@ function shareTree() {
         });
     }
     closeShareMenu();
-    returnFromFocus();
+    svg.selectAll("circle")
+        .filter(function (d) { return d._id === currentNode._id; })
+        .style("animation-delay", "1s")
+        .style("animation-name", "shareblink")
+        .style("animation-iteration-count", "1")
+        .style("animation-duration", "2s")
+        .style("animation-timing-function", "ease-in")
 }
 
 // Adds a node from the current node
@@ -738,6 +598,7 @@ function toggleDone() {
             .filter(function (d) { if (d._id === currentNode._id) { d.isComplete = true; } return d._id === currentNode._id; })
             .style("fill", "lightgreen");
         $('#myModal').modal("toggle");
+        $('#mark-done').text('Mark Incomplete');
     }
     else{
         svg.selectAll("circle")
@@ -750,7 +611,26 @@ function toggleDone() {
             .filter(function (d) { if (d._id === currentNode._id) { d.isComplete = false; } return d._id === currentNode._id; })
             .style("fill", "white");
         $('#myModal').modal("toggle");
+        $('#mark-done').text('Mark Complete');
     }
+
+    var currentNodeData = currentNode;
+    BFS(currentNodeData, removeParentReferences);
+
+    $.ajax({
+        method: "PUT",
+        url: "/trees/details/" + currentNode._id,
+        async: true,
+        data: {
+            "node" : currentNodeData
+        },
+        success: function(body){
+            currentNode = body.data;
+        },
+        error: function(xhr, err){
+            console.log(xhr.responseText);
+        }
+    });
 }
 
 // Unshares a tree with another users
@@ -762,6 +642,23 @@ function unShare(index, userEmail){
         });
         currentNode.sharedUsers = removingNulls;
         $('#myModal').modal("toggle");
+
+        var currentNodeData = currentNode;
+        BFS(currentNodeData, removeParentReferences);
+        $.ajax({
+            method: "PUT",
+            url: "/trees/details/" + currentNode._id,
+            async: true,
+            data: {
+                "node" : currentNodeData
+            },
+            success: function(body){
+                currentNode = body.data;
+            },
+            error: function(xhr, err){
+                console.log(xhr.responseText);
+            }
+        });
     }
     else{
         alert('Could not find user to delete')
@@ -773,7 +670,7 @@ function unShare(index, userEmail){
 function dblclick(d) {
     document.getElementById("description-span").innerHTML = d.description;
     document.getElementById("title-span").innerHTML = d.title;
-    document.getElementById("duedateinput").value = d.dueDate
+    document.getElementById("duedateinput").value = d.dueDate;
     currentNode = d;
     var people = "";
     if(currentNode.sharedUsers != null){
@@ -791,9 +688,11 @@ function dblclick(d) {
     document.getElementById("members").innerHTML = people;
     if(currentNode.isComplete){
         $('#myModal').css("background", "rgba(0,255,0,.1)");
+        $('#mark-done').text('Mark Incomplete');
     }
     else{
         $('#myModal').css("background", "rgba(255,0,0,.1)");
+        $('#mark-done').text('Mark Complete');
     }
     $('#myModal').modal("toggle");
 }
@@ -841,29 +740,21 @@ function closePreview(d) {
 // Opens the tree navigation bar
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";
-    document.getElementById("main").style.marginLeft = "250px";
-    document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
 }
 
 // Closes the tree navigation bar
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginLeft = "0";
-    document.body.style.backgroundColor = "white";
 }
 
 // Opens the shared trees window
 function openShare() {
     document.getElementById("mySideShare").style.width = "250px";
-    document.getElementById("main2").style.marginRight = "250px";
-    document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
 }
 
 // Closes the shared trees window
 function closeShare() {
     document.getElementById("mySideShare").style.width = "0";
-    document.getElementById("main2").style.marginRight = "0";
-    document.body.style.backgroundColor = "white";
 }
 
 // Displays the right click context menu

@@ -14,8 +14,7 @@ var NodeSchema = mongoose.Schema({
     },
     description: String,
     dueDate: {
-        type: Date,
-        default: Date.now 
+        type: String,
     },
     ownerId: {
         type: String,

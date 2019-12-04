@@ -69,7 +69,8 @@ router.post(
         newNode.root = true;
         newNode.title = reqNode.title;
         newNode.description = reqNode.description;
-        newNode.dueDate = reqNode.dueDate ? reqNode.dueDate : new Date(newNode.dueDate.setMonth(newNode.dueDate.getMonth()+1));
+        newNode.dueDate = reqNode.dueDate;
+        // ? reqNode.dueDate : new Date(newNode.dueDate.setMonth(newNode.dueDate.getMonth()+1))
         newNode.ownerId = user.id;
         newNode.ownerEmail = user.emails[0];
         newNode.sharedUsers = reqNode.sharedUsers ? reqNode.sharedUsers : [];
@@ -107,7 +108,8 @@ router.post(
         newNode.root = false;
         newNode.title = reqNode.title;
         newNode.description = reqNode.description;
-        newNode.dueDate = reqNode.dueDate ? reqNode.dueDate : new Date(newNode.dueDate.setMonth(newNode.dueDate.getMonth()+1));
+        newNode.dueDate = reqNode.dueDate 
+        // ? reqNode.dueDate : new Date(newNode.dueDate.setMonth(newNode.dueDate.getMonth()+1));
         newNode.ownerId = user.id;
         newNode.ownerEmail = user.emails[0];
         newNode.sharedUsers = reqNode.sharedUsers;
