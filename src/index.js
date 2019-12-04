@@ -98,6 +98,8 @@ app.use('/trees', tree);
 //Make css and js files statically available
 app.use(express.static(__dirname + '/views/javascript'));
 app.use(express.static(__dirname + '/views/css'));
+app.use(express.static(__dirname + '/views/static'));
+
 
 // Launch app to listen to specified port
 app.listen(port, function () {
