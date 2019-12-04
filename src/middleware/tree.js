@@ -4,7 +4,6 @@ const secure = require('./secure');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-
 // Import node model
 NodeModel = require('../models/nodeModel');
 
@@ -73,7 +72,7 @@ router.post(
         newNode.dueDate = reqNode.dueDate ? reqNode.dueDate : new Date(newNode.dueDate.setMonth(newNode.dueDate.getMonth()+1));
         newNode.ownerId = user.id;
         newNode.ownerEmail = user.emails[0];
-        newNode.sharedUsers = reqNode.sharedUsers;
+        newNode.sharedUsers = reqNode.sharedUsers ? reqNode.sharedUsers : [];
         newNode.isComplete = reqNode.isComplete;
         newNode.isOverdue = reqNode.isOverdue ? reqNode.isOverdue : false;
         newNode.children = [];      

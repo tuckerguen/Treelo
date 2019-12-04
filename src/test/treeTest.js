@@ -13,7 +13,12 @@ const test_user = {
     id: 'test|5dcf7e98bfb28c0ecba5c9f2'
 };
 
-const test_tree = {
+const node_keys = [
+    'sharedUsers', 'children', '_id', 'dueDate', 'title',
+    'description', 'ownerId', 'ownerEmail', 'isComplete', 'isOverdue'
+];
+
+const test_root = {
     "tree": {
         title: "TEST TITLE",
         description: "test description",
@@ -24,57 +29,128 @@ const test_tree = {
         ],
         isComplete: false,
         isOverdue: false,
-        children: [
-            {
-                title: "Child1",
-                description: "child 1 description",
-                dueDate: "",
-                owner: "johndoe@gmail.com",
-                sharedUsers: [
-                    "janedoe@gmail.com",
-                    "steve@gmail.edu"
-                ],
-                isComplete: false,
-                isOverdue: false,
-                children: []
-            }
-        ]
+        children: []
     }
 }
 
-function createTree(tree) {
+const test_child = {
+    "tree": {
+        title: "Child",
+        description: "Child's description",
+        dueDate: "",
+        sharedUsers: [
+            "janedoe@gmail.com",
+            "benbaierl@case.edu"
+        ],
+        isComplete: false,
+        isOverdue: false,
+        children: []
+    }
+}
+
+function saveRoot(tree) {
     var treeId;
-    var tree = new Node();
-    tree.title = tree.title;
-    tree.description = tree.description;
-    tree.dueDate = tree.dueDate ? tree.dueDate : new Date();
-    tree.ownerId = test_user.id;
-    tree.ownerEmail = test_user.emails[0].value;
-    tree.sharedUsers = tree.sharedUsers;
-    tree.isComplete = tree.isComplete;
-    tree.isOverdue = tree.isOverdue ? tree.isOverdue : false;
-    tree.children = tree.children;
-    tree.save(function (err) {
-        console.log('created: ' + tree._id);
-        treeId = tree._id;
+    var newTree = new Node();
+    newTree.title = tree.title;
+    newTree.description = tree.description;
+    newTree.dueDate = tree.dueDate ? tree.dueDate : new Date();
+    newTree.ownerId = test_user.id;
+    newTree.ownerEmail = test_user.emails[0].value;
+    newTree.sharedUsers = tree.sharedUsers;
+    newTree.isComplete = tree.isComplete;
+    newTree.isOverdue = tree.isOverdue ? tree.isOverdue : false;
+    newTree.children = tree.children;
+    newTree.save(function (err) {
+        console.log('created: ' + newTree._id);
+        treeId = newTree._id;
     });
     return treeId;
 };
 
-function deleteTree(treeId) {
-    Node.deleteMany({
-        _id: treeId
-    }, (err, node) => {
-        if(err) {
-            console.log(err);
-        }
-        else {
-            console.log(node);
-        }
-    });
-};
+// beforeEach((done) => {
+//     //Empty database
+//     Node.deleteMany({}, (err) => {
+//         done();
+//     });  
+// });
 
-describe('Test GET /', function(){    
+var tempTreeId;
+describe('Node creation', () => {
+    /*
+    * Test the POST /newTree route
+    */
+    describe('POST /newTree', function(){
+        it('creates a new tree', () => {
+            return request(app)
+                .post('/trees/newTree')
+                .send(test_root)
+                .expect(201)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect((res) => {
+                    var newRoot = res.body.data;
+                    expect(newRoot._id).to.exist;
+                    tempTreeId = newRoot._id;
+                    expect(res.body).to.exist;
+                    expect(res.body.message).to.equal('New tree created!');
+                    expect(newRoot).that.includes.all.keys(node_keys);
+                    expect(newRoot.sharedUsers)
+                        .to.be.an.instanceof(Array)
+                        .and.to.have.length(2)
+                        .and.to.include.members(test_root.tree.sharedUsers);
+                    expect(newRoot.children)
+                        .to.be.an.instanceof(Array)
+                        .to.have.length(0);
+                    Object.keys(newRoot).forEach((key) => {
+                        expect(newRoot.key).to.deep.equal(test_root.tree.key);
+                    });
+                });          
+            });
+    });
+    
+    /*
+    *   Test the POST /addNode/:nodeId endpoint
+    */
+    describe('POST /addNode/:nodeId', function(){
+        it('Adds a new node to the parent with id = nodeId', () => {
+            return request(app)
+                .post('/trees/addNode/' + tempTreeId)
+                .send(test_child)
+                .expect(201)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect((res) => {
+                    var newChild = res.body.data;
+                    expect(newChild._id).to.exist;
+                    expect(res.body).to.exist;
+                    expect(res.body.message).to.equal('New node added!');
+                    expect(newChild).that.includes.all.keys(node_keys);
+                    expect(newChild.sharedUsers)
+                        .to.be.an.instanceof(Array)
+                        .and.to.have.length(2)
+                        .and.to.include.members(test_child.tree.children);
+                    expect(newChild.children)
+                        .to.be.an.instanceof(Array)
+                        .to.have.length(0);
+                    //Check for parent has child set properly
+                    Node.findById(tempTreeId, (err, parent) => {
+                        expect(parent.children)
+                            .to.be.an.instanceof(Array)
+                            .and.to.have.length(1);
+                            
+                        child = parent.children[0].toJSON();
+                        expect(child).that.includes.all.keys(node_keys);
+                        Object.keys(child).forEach((key) => {
+                            expect(child.key).to.equal(test_child.key);
+                        });
+                    });
+                });          
+        });
+    });
+});
+
+/*
+*   Test the GET / endpoint
+*/
+describe('GET /', function(){    
     it('responds with treeView html page', 
         () => {
             return request(app)
@@ -85,39 +161,10 @@ describe('Test GET /', function(){
     ); 
 });
 
-var tempTreeId;
-describe('Test POST /', function(){
-    it('creates a new tree and responds with the object stored', 
-        () => {
-            return request(app)
-                .post('/trees')
-                .send(test_tree)
-                .expect(201)
-                .expect('Content-Type', 'application/json; charset=utf-8')
-                .expect((res) => {
-                    expect(res.body.data._id).to.exist;
-                    tempTreeId = res.body.data._id;
-                    expect(res.body).to.exist;
-                    expect(res.body.message).to.equal('New tree created!');
-                    expect(res.body.data)
-                        .that.includes.all.keys([
-                            'sharedUsers', 'children', '_id', 'dueDate', 'title',
-                            'description', 'ownerId', 'ownerEmail', 'isComplete', 'isOverdue'
-                        ]);
-                    expect(res.body.data.sharedUsers).to.be.an.instanceof(Array)
-                        .and.to.have.length(2)
-                        .and.to.include.members([
-                            "janedoe@gmail.com",
-                            "benbaierl@case.edu"
-                        ]);
-                    expect(res.body.data.children).to.be.an.instanceof(Array)
-                        .to.have.length(1);
-                    console.log('deleting: ' + tempTreeId);
-                });          
-        });
-});
-
-describe('Test GET /data', function() {
+/*
+*   Test the GET /data endpoint
+*/
+describe('GET /data', function() {
     it("responds with all of a user's trees", 
         () => {
             return request(app)
@@ -126,19 +173,20 @@ describe('Test GET /data', function() {
                 .expect(200)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect((res) => {
+                    console.log(res.body);
                     expect(res.body.data)
                         .to.be.an.instanceOf(Array)
                         .and.to.have.property(0)
-                        .that.includes.all.keys([
-                            'sharedUsers', 'children', '_id', 'dueDate', 'title', 
-                            'description','ownerId', 'ownerEmail', 'isComplete', 'isOverdue'
-                        ]);
+                        .that.includes.all.keys(node_keys);
                 });           
         });
 });
 
-describe('Test GET /:treeId', function() {
-    it("responds with tree with Id = treeId", 
+/*
+*   Test GET the /:nodeId endpoint 
+*/
+describe('GET /:nodeId', function() {
+    it("responds with tree with Id = nodeId", 
         () => {
             return request(app)
                 .get('/trees/' + tempTreeId)
@@ -146,22 +194,60 @@ describe('Test GET /:treeId', function() {
                 .expect(200)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(function(res){
-                    console.log(res.body.data);
-                    expect(res.body.data)
-                        .includes.all.keys([
-                            'sharedUsers', 'children', '_id', 'dueDate', 'title', 
-                            'description','ownerId', 'ownerEmail', 'isComplete', 'isOverdue'
-                        ]);
-                    Node.deleteMany({
-                        _id: tempTreeId
-                    }, (err, node) => {
-                        if(err) {
-                            console.log(err);
-                        }
-                        else {
-                            console.log('deleted: ' + node._id);
-                        }
-                    });
+                    expect(res.body.data).includes.all.keys(node_keys);
                 });           
-    });
+        }
+    );
+});
+
+
+/*
+*   Test the PUT /details/:nodeId endpoint
+*/
+describe('Test PUT /details/:nodeId', () => {
+    it('updates the data stored in the node with id = nodeId',
+        () => {
+            var updated_node = {
+                node: {
+                    title: "Updated title",
+                    description: "updated description",
+                    dueDate: "",
+                    sharedUsers: [
+                        "benbaierl@case.edu"
+                    ],
+                    isComplete: true,
+                    isOverdue: true,
+                    children: []
+                }
+            }
+
+            return request(app)
+                .put('/trees/details/' + tempTreeId)
+                .send(updated_node)
+                .set('Accept', 'application/json')
+                .expect(200)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect(function(res){
+                    var node = res.body.data;
+                    expect(node).includes.all.keys(node_keys);
+                    Object.keys(node).forEach((key) => {
+                        expect(node.key).to.equal(updated_node.key);
+                    });
+                });      
+        });
+});
+
+/*
+*   Test the DELETE /:nodeId endpoint
+*/
+describe('Test delete /:nodeId', () => {
+    it('deletes the node and all children from the database',
+        () => {
+            return request(app)
+                .delete('/trees/' + tempTreeId)
+                .expect(200)
+                .expect((res) => {
+                    expect(res.body.message).to.be.equal('Node deleted');
+                });
+        });
 });
