@@ -264,6 +264,16 @@ svg text{
     background: white;
 }
 
+#logout{
+    position: absolute;
+    left: 5%;
+    bottom: 11.2%;
+    border-radius: 25px;
+    box-shadow: 0 0 5px black;
+    text-align: center;
+    background: white;
+}
+
 /* The Action Styling for the Create New Tree Popup Button */
 #create-tree:hover{
     background: lightgreen;

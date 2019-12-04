@@ -38,7 +38,6 @@ router.get(
     '/user', 
     secure.secured, 
     (req, res) => {
-        console.log(req);
         //Get user's data
         var user = getUserProfile(req);
         res.json({
@@ -151,11 +150,16 @@ router.put(
     secure.secured,
     (req, res) => {
         console.log('updating: node with id: ' + req.params.nodeId);
-        NodeModel.findByIdAndUpdate(
+        console.log(req.body.node);
+        if(!req.body.node.hasOwnProperty("sharedUsers")){
+            req.body.node.sharedUsers = undefined;
+        }
+
+        NodeModel.findByIdAndUpdate (
             req.params.nodeId,
             req.body.node,
             function(err, node){
-                if(err){
+                if(err) {
                     console.log(err);
                     res.status(400).send();
                 }
@@ -203,6 +207,7 @@ router.get(
     (req, res) => {
         console.log('finding node with id: ' + req.params.nodeId);
         var user = getUserProfile(req);
+
         findTree(req.params.nodeId, user).then((tree) => {
             if(tree instanceof Error){
                 res.status(400).json({
@@ -260,8 +265,6 @@ router.delete(
         console.log('deleting: ' + req.params.nodeId);
         NodeModel.findOneAndDelete({
             _id: req.params.nodeId,
-            ownerId: user.id,
-            ownerEmail: { $in : user.emails }
         }, 
         function (err, node) {
             if (err) {

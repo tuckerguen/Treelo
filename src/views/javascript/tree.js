@@ -325,6 +325,10 @@ function update(source) {
     });
 }
 
+function logout(){
+    window.location.href = "http://localhost:8080/logout";
+}
+
 // **************************_____________Manipulating Tree Functions_____________**************************
 // Deletes a tree
 function deleteTree(d) {
@@ -443,8 +447,13 @@ function updateNodeInfo(d) {
     svg.selectAll("text")
         .text(function (d) { return d.title; });
 
-    var currentNodeData = currentNode;
-    BFS(currentNodeData, removeParentReferences);
+    
+    var currentNodeData = {
+        title: currentNode.title,
+        description: currentNode.description,
+        dueDate: currentNode.dueDate,
+        sharedUsers: currentNode.sharedUsers
+    };
 
     $.ajax({
         method: "PUT",
@@ -479,37 +488,38 @@ function returnFromFocus() {
     $("#shareFooter").hide();
 }
 
-// Removes the parent references which causes circular data when posting to the backend
-function removeParentReferences(tree){
-    tree.parent = null;
-}
-
 // Shares a tree from the current node with a specified user
 function shareTree() {
     var userName = document.getElementById("shared-with").value;
-    if(currentNode.sharedUser == null){
-        currentNode.sharedUser = [];
+  
+    if(currentNode.sharedUsers == null){
+        currentNode.sharedUsers = [userName];
     }
     if (!currentNode.sharedUsers.includes(userName) && userName != null && userName != "") {
         currentNode.sharedUsers.push(userName);
-        var currentNodeData = currentNode;
-        BFS(currentNodeData, removeParentReferences);
-        $.ajax({
-            method: "PUT",
-            url: "/trees/details/" + currentNode._id,
-            async: true,
-            data: {
-                "node" : currentNodeData
-            },
-            success: function(body){
-                currentNode = body.data;
-            },
-            error: function(xhr, err){
-                console.log(xhr.responseText);
-            }
-        });
     }
+
+    var currentNodeData = {
+        sharedUsers : currentNode.sharedUsers
+    };
+
+    $.ajax({
+        method: "PUT",
+        url: "/trees/details/" + currentNode._id,
+        async: true,
+        data: {
+            "node" : currentNodeData
+        },
+        success: function(body){
+            currentNode = body.data;
+        },
+        error: function(xhr, err){
+            console.log(xhr.responseText);
+        }
+    });
     closeShareMenu();
+    BFS(currentTree, findSharedTrees);
+    showSharedButtons();
     svg.selectAll("circle")
         .filter(function (d) { return d._id === currentNode._id; })
         .style("animation-delay", "1s")
@@ -526,15 +536,9 @@ function addNode() {
         "title": "New Node",
         "description": "Enter Description Here",
         "sharedUsers": [],
-        "parent": currentNode.title,
         "children": [],
         "isComplete": false,
     }
-
-    // ***** must do a deep copy right now it usses the same references and screws the rest of the code *****
-    // var currentTreeData = JSON.parse(JSON.stringify(currentTree));
-    var currentChild = newChild;
-    BFS(newChild, removeParentReferences);
 
     // Backend ajax call to add a node to the current tree within the backend data
     $.ajax({
@@ -614,8 +618,10 @@ function toggleDone() {
         $('#mark-done').text('Mark Complete');
     }
 
-    var currentNodeData = currentNode;
-    BFS(currentNodeData, removeParentReferences);
+    var currentNodeData = {
+        isComplete: currentNode.isComplete,
+        sharedUsers: currentNode.sharedUsers
+    };
 
     $.ajax({
         method: "PUT",
@@ -643,8 +649,11 @@ function unShare(index, userEmail){
         currentNode.sharedUsers = removingNulls;
         $('#myModal').modal("toggle");
 
-        var currentNodeData = currentNode;
-        BFS(currentNodeData, removeParentReferences);
+        var currentNodeData = {
+            sharedUsers: currentNode.sharedUsers,
+            title: currentNode.title
+        };
+
         $.ajax({
             method: "PUT",
             url: "/trees/details/" + currentNode._id,
