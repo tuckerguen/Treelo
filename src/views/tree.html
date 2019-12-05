@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto|Lobster|Lato&display=swap" rel="stylesheet">
     <!-- The Corresponding CSS styling -->
-    <link rel="stylesheet" href="tree.css" />
+    <link rel="stylesheet" href="css/tree.css" />
     <!-- For Jquery Code -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!-- For the Modal -->
@@ -41,10 +41,12 @@
         </div>
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <div id = "create-footer">    
-        <br><button type="button" id="create-tree" onClick="showNewTreePopup(event)">Create New Tree</button>
         <br><button type="button" id="show-quickstart" onClick="showquickstart()">Need Help?</button>
         <br><button type="button" id="logout" onClick="logout()">Logout</button>
     </div> 
+    <div id = "create-button">
+        <br><button type="button" id="create-tree" onClick="showNewTreePopup(event)">Create New Tree</button>
+    </div>
     </div>
     <div id="title">
         <span style="font-size: 35px;">Treelo</span>
@@ -67,7 +69,7 @@
 <!-- Form for Submitting New Tree Data -->
 <span class="newtreeform" id="newtreeform">
     <form>
-        Enter New Root Node Information:
+        <Strong>Enter New Root Node Information:</Strong>
         <div>
             <label for="titleText"><br>Title</label>
             <input id="titleText" type="text" name="titleText">
@@ -77,7 +79,7 @@
             <input id="description" type="textarea" rows="4" cols="10" name="description">
         </div>
         <div>
-            <br><input id="submit1" type="button" value="submit" onclick="makeNewData()" />
+            <br><input id="submit1" type="button" value="Submit" onclick="makeNewData()" />
             <button id="cancel" type="button" onclick="closeNewTreePopup()">Cancel </button>
         </div>
     </form>
@@ -135,7 +137,7 @@
 
     <!-- load the d3.js library and TreeJS file-->
     <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="tree.js"></script>
+    <script src="javascript/tree.js"></script>
 
 </body>
 </html>

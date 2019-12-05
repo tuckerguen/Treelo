@@ -17,9 +17,30 @@
     background-color: lightgreen;
 }
 
+#cancel:hover{
+    background-color: lightgreen;
+    outline: white;
+    cursor: pointer;
+    border-left: 4px solid black;
+    border-right: 4px solid black;
+    border-radius: 10px;
+}
+#submit1{
+    border-radius: 10px;
+}
+
+#cancel{
+    border-radius: 10px;
+}
+
 /* The Hover Acion for Submitting New Tree Data */
 #submit1:hover{
-    background-color: rgba(173, 236, 173, 0.815);
+    background-color: lightgreen;
+    outline: white;
+    cursor: pointer;
+    border-left: 4px solid black;
+    border-right: 4px solid black;
+    border-radius: 10px;
 }
 
 /* The Hover Action for Canceling New Tree Data Submission */
@@ -116,13 +137,13 @@ svg text{
     padding: 8px 8px 8px 32px;
     text-decoration: none;
     font-size: 25px;
-    color: #818181;
+    color: white;
     display: block;
     transition: 0.3s;
 }
 
 .sidenav a:hover {
-    color: #f1f1f1;
+    color: gray;
 }
 
 /* The Styling for the Exit Button Within the Tree Side Navigation */
@@ -271,8 +292,8 @@ svg text{
 
 #logout{
     position: absolute;
-    left: 5%;
-    bottom: 11.2%;
+    left: 8%;
+    bottom: 2.8%;
     border-radius: 25px;
     box-shadow: 0 0 5px black;
     text-align: center;
@@ -286,7 +307,7 @@ svg text{
 
 #show-quickstart{
     position: absolute;
-    left: 5%;
+    left: 8%;
     bottom: 7%;
     border-radius: 25px;
     box-shadow: 0 0 5px black;
@@ -297,10 +318,12 @@ svg text{
 /* The Styling for the New Tree Form */
 .newtreeform{
     display: none;
+    position: absolute;
+    top: 85px;
     margin-left: auto;
-    margin-right:auto;
+    margin-right: auto;
     width: 50%;
-    height: auto;
+    height: 16%;
     border-radius: 25px;
     box-shadow: 0 0 5px black;
     text-align: center;
@@ -310,11 +333,15 @@ svg text{
 /* The Styling for the Text Box for Entering New Tree Title */
 #titleText{
     width: 300px;
+    border-radius: 5px;
+    border-color: rgb(0, 113, 179);
 }
 
 /* The Styling for the Text Box for Entering New Tree Description */
 #description{
     width: 500px;
+    border-radius: 5px;
+    border-color: rgb(0, 113, 179);
 }
 
 /* The Styling for the Share Tree Form */
@@ -346,7 +373,7 @@ svg text{
     overflow-y: auto;
     transition: 0.5s;
     padding-top: 60px;
-    box-shadow: -3px 3px 2px  rgb(87, 87, 87);
+    box-shadow: 0px 0px 10px  rgb(87, 87, 87);
 
     /*BEN*/
     /* height: 100%;
@@ -409,6 +436,12 @@ svg text{
     top: 5px;
     right: 25px;
     font-size: 10px;
+}
+
+#create-button{
+    position: absolute;
+    top: 10%;
+    left: 25px;
 }
 
 /* Styling for the Return From Focus Button within the Trees Shared Side Navigation Bar */
