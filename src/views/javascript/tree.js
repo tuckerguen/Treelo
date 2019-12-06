@@ -71,6 +71,8 @@ var sharedUsersToDisplay = [];
 var sharedUsersToDisplayNodes = [];
 //Current logged in userl
 var currentUser;
+//Array of all user's trees
+var treeData = []; 
 
 // The backend ajax call to get all the trees that a user can view
 $.ajax({
