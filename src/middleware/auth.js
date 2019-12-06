@@ -1,22 +1,31 @@
 /**
- * Required External Modules
+ *   auth.js
+ *   Handles logins, reroutes, and logouts 
+ *   through the Auth0 API
  */
+
+
+//Routing modules
 const express = require('express');
 const router = express.Router();
+//Authentication module
 const passport = require("passport");
+//URL parsing and reading modules
 const util = require("util");
 const url = require("url");
 const querystring = require("querystring");
-
+//Configure access to .env file
 require("dotenv").config();
 
-/**
- * Routes Definitions
- */
+//Default redirect for unsuccessful logins
 const redirect = '/';
 
-router.get(
-    '/', 
+
+
+/**
+ * The default route for the website, a re-route to Auth0 login for Treelo
+ */
+router.get('/', 
     passport.authenticate("auth0", {
         scope: 'openid email profile'
     }), 
@@ -25,16 +34,19 @@ router.get(
     }
 );
 
-router.get(
-    '/callback',
+/**
+ * Callback route used by Auth0 for authentication flow
+ */
+router.get('/callback',
     (req, res, next) => {
+        //Authenticate the user
         passport.authenticate("auth0", (err, user, info) => {
             if (err) {
                 return next(err);
             }
             if (!user) {
                 console.log('user failed');
-                //Redirect to home page if not logged in
+                //Redirect to the home login page
                 return res.redirect(redirect);
             }
             req.logIn(user, (err) => {
@@ -44,15 +56,18 @@ router.get(
                 }
                 const returnTo = req.session.returnTo;
                 delete req.session.returnTo;
-                //Redirect to tree home on login
+                //Redirect to tree homepage on login
                 console.log('redirect to trees');
                 res.redirect(returnTo || '/trees');
             });
-        })(req, res, next);
+        })
+        (req, res, next);
     }
 );
 
-
+/**
+ * Endpoint for logging out a user and terminating their session
+ */
 router.get(
     '/logout',
     (req, res) => {
@@ -82,6 +97,6 @@ router.get(
 );
 
 /**
- * Module Exports
+ * Export the router to use in other files
 */
 module.exports = router;

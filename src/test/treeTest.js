@@ -48,7 +48,7 @@ const test_child = {
     }
 }
 
-function saveRoot(tree) {
+var saveRoot = (tree) => {
     var treeId;
     var newTree = new Node();
     newTree.title = tree.title;
@@ -60,7 +60,7 @@ function saveRoot(tree) {
     newTree.isComplete = tree.isComplete;
     newTree.isOverdue = tree.isOverdue ? tree.isOverdue : false;
     newTree.children = tree.children;
-    newTree.save(function (err) {
+    newTree.save((err) => {
         console.log('created: ' + newTree._id);
         treeId = newTree._id;
     });
@@ -79,7 +79,7 @@ describe('Node creation', () => {
     /*
     * Test the POST /newTree route
     */
-    describe('POST /newTree', function(){
+    describe('POST /newTree', () => {
         it('creates a new tree', () => {
             return request(app)
                 .post('/trees/newTree')
@@ -91,7 +91,7 @@ describe('Node creation', () => {
                     expect(newRoot._id).to.exist;
                     tempTreeId = newRoot._id;
                     expect(res.body).to.exist;
-                    expect(res.body.message).to.equal('New tree created!');
+                    expect(res.body.message).to.equal('New tree created');
                     expect(newRoot).that.includes.all.keys(node_keys);
                     expect(newRoot.sharedUsers)
                         .to.be.an.instanceof(Array)
@@ -110,7 +110,7 @@ describe('Node creation', () => {
     /*
     *   Test the POST /addNode/:nodeId endpoint
     */
-    describe('POST /addNode/:nodeId', function(){
+    describe('POST /addNode/:nodeId', () => {
         it('Adds a new node to the parent with id = nodeId', () => {
             return request(app)
                 .post('/trees/addNode/' + tempTreeId)
@@ -121,7 +121,7 @@ describe('Node creation', () => {
                     var newChild = res.body.data;
                     expect(newChild._id).to.exist;
                     expect(res.body).to.exist;
-                    expect(res.body.message).to.equal('New node added!');
+                    expect(res.body.message).to.equal('New node added');
                     expect(newChild).that.includes.all.keys(node_keys);
                     expect(newChild.sharedUsers)
                         .to.be.an.instanceof(Array)
@@ -150,7 +150,7 @@ describe('Node creation', () => {
 /*
 *   Test the GET / endpoint
 */
-describe('GET /', function(){    
+describe('GET /', () => {    
     it('responds with treeView html page', 
         () => {
             return request(app)
@@ -164,7 +164,7 @@ describe('GET /', function(){
 /*
 *   Test the GET /data endpoint
 */
-describe('GET /data', function() {
+describe('GET /data', () => {
     it("responds with all of a user's trees", 
         () => {
             return request(app)
@@ -185,7 +185,7 @@ describe('GET /data', function() {
 /*
 *   Test GET the /:nodeId endpoint 
 */
-describe('GET /:nodeId', function() {
+describe('GET /:nodeId', () => {
     it("responds with tree with Id = nodeId", 
         () => {
             return request(app)
@@ -193,7 +193,7 @@ describe('GET /:nodeId', function() {
                 .set('Accept', 'application/json')
                 .expect(200)
                 .expect('Content-Type', 'application/json; charset=utf-8')
-                .expect(function(res){
+                .expect((res) => {
                     expect(res.body.data).includes.all.keys(node_keys);
                 });           
         }
@@ -204,6 +204,7 @@ describe('GET /:nodeId', function() {
 /*
 *   Test the PUT /details/:nodeId endpoint
 */
+//Test nodeId doesn't exist
 describe('Test PUT /details/:nodeId', () => {
     it('updates the data stored in the node with id = nodeId',
         () => {
@@ -227,7 +228,7 @@ describe('Test PUT /details/:nodeId', () => {
                 .set('Accept', 'application/json')
                 .expect(200)
                 .expect('Content-Type', 'application/json; charset=utf-8')
-                .expect(function(res){
+                .expect((res) => {
                     var node = res.body.data;
                     expect(node).includes.all.keys(node_keys);
                     Object.keys(node).forEach((key) => {
@@ -247,7 +248,7 @@ describe('Test delete /:nodeId', () => {
                 .delete('/trees/' + tempTreeId)
                 .expect(200)
                 .expect((res) => {
-                    expect(res.body.message).to.be.equal('Node deleted');
+                    expect(res.body.message).to.be.equal('Node ' + tempTreeId + ' deleted');
                 });
         });
 });
