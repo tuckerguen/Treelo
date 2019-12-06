@@ -31,34 +31,45 @@
     </ul>
 </div>
 
+<!-- Navigation Bars and Header -->
 <div id="navBar">
     <!--Tree Navigation Bar-->
+    <!-- The Tree Nav Open Button -->
     <div id="treeNav">
         <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
     </div>
     <div id="mySidenav" class="sidenav">
-        <div id = "sideNavButtons">
+        <!-- The Div Containing Buttons Corresponding to a User's Trees -->
+        <div id="sideNavButtons">
         </div>
+        <!-- Tree Navigation Bar Close Button -->
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <div id = "create-footer">    
-        <br><button type="button" id="show-quickstart" onClick="showquickstart()">Need Help?</button>
-        <br><button type="button" id="logout" onClick="logout()">Logout</button>
-    </div> 
-    <div id = "create-button">
-        <br><button type="button" id="create-tree" onClick="showNewTreePopup(event)">Create New Tree</button>
+        <!-- Footer Buttons: Logout and Help Buttons -->
+        <div id="create-footer">
+            <br><button type="button" id="show-quickstart" onClick="showquickstart()">Need Help?</button>
+            <br><button type="button" id="logout" onClick="logout()">Logout</button>
+        </div>
+        <!-- Create New Tree Button -->
+        <div id="create-button">
+            <br><button type="button" id="create-tree" onClick="showNewTreePopup(event)">Create New Tree</button>
+        </div>
     </div>
-    </div>
+    <!-- The Page Title -->
     <div id="title">
         <span style="font-size: 35px;">Treelo</span>
     </div>
-    <!--Tree Shared Navigation Bar-->
+    <!--Tree Shared Navigation Bar Open Button-->
     <div id="shareNav">
         <span style="font-size:30px;cursor:pointer" onclick="openShare()">Members &#9776;</span>
     </div>
+    <!-- Tree Shared Navigation Bar -->
     <div id="mySideShare" class="sideshare">
+        <!-- Tree Shared Navigation Bar Close Button -->
         <a href="javascript:void(0)" class="closebtn" onclick="closeShare()">&times;</a>
+        <!-- The Div Containing Buttons Corresponding to Each Shared View within the Current Displayed Tree -->
         <div id="currentTreeShared">
         </div>
+        <!-- Holds the Return From Focus Button When Viewing Shared Trees -->
         <div id="shareFooter">
             <br><button id="return" type="button" onClick="returnFromFocus()">Expand from Share View</button>
         </div>
@@ -70,15 +81,18 @@
 <span class="newtreeform" id="newtreeform">
     <form>
         <Strong>Enter New Root Node Information:</Strong>
+        <!-- The Title Input For New Tree Data -->
         <div>
             <label for="titleText"><br>Title</label>
             <input id="titleText" type="text" name="titleText">
         </div>
         <div>
+            <!-- The Description Input for New Tree Data -->
             <label for="description">Description</label>
             <input id="description" type="textarea" rows="4" cols="10" name="description">
         </div>
         <div>
+            <!-- The Submit and Cancel Buttons for New Tree Data -->
             <br><input id="submit1" type="button" value="Submit" onclick="makeNewData()" />
             <button id="cancel" type="button" onclick="closeNewTreePopup()">Cancel </button>
         </div>
@@ -90,10 +104,12 @@
     <form>
         Share Tree:
         <div>
+            <!-- The User Email Input for the Sharing a Tree Popup -->
             <label for="shared-with"><br>User Email</label>
             <input id="shared-with" type="text" name="shared-with">
         </div>
         <div>
+            <!-- The Submit and Cancel Buttons for the Sharing a Tree Popup -->
             <br><input id="submit" type="button" value="submit" onclick="shareTree()" />
             <button id="cancel" type="button" onclick="closeShareMenu()">Cancel </button>
         </div>
@@ -106,20 +122,26 @@
         <div class="modal-dialog">
             <form class="modal-content">
                 <div class="modal-header">
+                    <!-- The Close Button -->
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <!-- The Due Date Input/Display -->
                     <div id="duedate">
                         <label for="duedateinput"> Due Date</label>
                         <input id="duedateinput" type="datetime-local">
                     </div>
+                    <!-- The Card Title -->
                     <label for="title-span">Title:</label>
                     <p id="modal-title"> <span id=title-span> test</span> </p>
                 </div>
-                <label id = "desc-label" for="description-span">Description:</label>
+                <!-- The Card Description -->
+                <label id="desc-label" for="description-span">Description:</label>
                 <p id="modal-description" style="white-space: pre-line;"> <span id=description-span> test</span> </p>
-                <label id = "members-label" for="members">Members:</label>
+                <!-- The Mebers List -->
+                <label id="members-label" for="members">Members:</label>
                 <div id="members">
                 </div>
                 <div class="modal-footer">
+                    <!-- The Toggle Complete and Submit Changes Buttons -->
                     <button type="button" id="submit-changes">Save Changes</button>
                     <button type="button" id="mark-done" onClick="toggleDone()">Mark Complete</button>
                 </div>
@@ -140,4 +162,5 @@
     <script src="javascript/tree.js"></script>
 
 </body>
+
 </html>
