@@ -12,11 +12,12 @@
     overflow-y: hidden;
 }
 
-/* The Hover Acion for Submitting New Share Data */
+/* The Hover Acion for Submitting a User to Share a Tree With */
 #submit:hover{
     background-color: lightgreen;
 }
 
+/* The Hover Action for Canceling Creating a New Tree or Sharing a Tree */
 #cancel:hover{
     background-color: lightgreen;
     outline: white;
@@ -25,12 +26,17 @@
     border-right: 4px solid black;
     border-radius: 10px;
 }
+
+/* The Styling for the Submit Button for the New Tree Data Form */
 #submit1{
     border-radius: 10px;
+    position: relative;
 }
 
+/* The Styling for the Cancel button for both Creating a New Tree and Sharing a Tree */
 #cancel{
     border-radius: 10px;
+    position: relative;
 }
 
 /* The Hover Acion for Submitting New Tree Data */
@@ -69,6 +75,7 @@ svg{
     display: block;
 }
 
+/* The Styling for the Section Holding the Tree Diagram */
 svg text{
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -118,6 +125,7 @@ svg text{
     text-align: center;
 }
 
+/* The Styling for the Tree Side Navigation Bar's Buttons */
 #sideNavButtons{
     overflow-y: auto;
     overflow-x: hidden;
@@ -142,6 +150,7 @@ svg text{
     transition: 0.3s;
 }
 
+/* The Hover Styling for the Exit Button of the Tree Side Navigation */
 .sidenav a:hover {
     color: gray;
 }
@@ -173,6 +182,7 @@ svg text{
     border-right: 4px solid black;
 }
 
+/* Styling for the Tree Navigation Side Bar */
 #navBar {
     width:100%;
     height:80px;
@@ -181,7 +191,7 @@ svg text{
     color: white;
 }
 
-/* The Styling for the Tree Side Navigation Bar */
+/* The Styling for the Tree Side Navigation Bar Opening Button */
 #treeNav {
     width: 15%;
     transition: margin-left .5s;
@@ -189,6 +199,7 @@ svg text{
     float:left;
 }
 
+/* The Styling for the Title Displayed on the top middle of the Window */
 #title {
     margin-left: 31%;
     height:100px;
@@ -198,7 +209,7 @@ svg text{
     font-family: 'Lobster', cursive;
 }
 
-/* The Styling for the Share Side Navigation Bar */
+/* The Styling for the Button that Opens the Share Side Navigation Bar */
 #shareNav {
     transition: margin-right .5s;
     height:100px;
@@ -207,14 +218,16 @@ svg text{
     float: right
 }
 
+/* The Styling for the Section of the Share Side Navigation Bar Containing the Button to Display Views */
 #currentTreeShared{
     position: relative;
     height: 100%;
     overflow-y: auto;
-    overflow-x:hidden;
+    overflow-x: hidden;
     right: 8%;
 }
 
+/* The Styling for the Buttons Within this Section */
 #currentTreeShared button{
     float: right;
 }
@@ -290,6 +303,7 @@ svg text{
     background: white;
 }
 
+/* The Styling for the Logout Button */
 #logout{
     position: absolute;
     left: 8%;
@@ -305,6 +319,7 @@ svg text{
     background: lightgreen;
 }
 
+/* The Styling for the Button for Redirecting to the Quick Start Help Page */
 #show-quickstart{
     position: absolute;
     left: 8%;
@@ -329,6 +344,7 @@ svg text{
     text-align: center;
     background: white;
     padding: 10px;
+    overflow: hidden;
 }
 /* The Styling for the Text Box for Entering New Tree Title */
 #titleText{
@@ -438,6 +454,7 @@ svg text{
     font-size: 10px;
 }
 
+/* The Styling for the Button to Create a New Tree */
 #create-button{
     position: absolute;
     top: 10%;
@@ -566,6 +583,7 @@ svg text{
         }
 }
 
+/* The Animation to Display After Sharing a Node */
 @keyframes shareblink{
     0%{
         r: 10;
