@@ -1,3 +1,4 @@
+<!-- The HTML which represents the basic user guide for Treelo -->
 <h1 style="text-align: center;"><strong>Treelo Quickstart Guide</strong></h1>
 <hr />
 <p style="text-align: center;"><strong>Welome to Treelo, the tree based organizational software!</strong></p>
@@ -5,30 +6,98 @@
 <ul style="list-style-type: circle;">
     <li>Navigation
         <ul style="list-style-type: disc;">
-            <li>The Treelo page has three main and important components: the Tree View, Tree Navigation Sidebar, the
-                Members Sidebar, and the Context Menu.
+            <li>The Treelo page has four main and important components: the <strong>Tree View</strong>, <strong>Tree
+                    Navigation Sidebar</strong>, the <strong>Members Sidebar</strong>, and the <strong>Context
+                    Menu</strong>.
                 <ul style="list-style-type: square;">
-                    <li>Tree View: The Tree View is the main focus of the Treelo page. It displays each tree you have
-                        created one tree at a time.&nbsp;
-                        <img src="images/TreeView.png" alt="The Tree View Side Navigation Bar" width="100%">
-                    </li>
-                        
-                    <li>Tree Navigation Sidebar: The Navigation Sidebar can be opened by clicking the Treelo Menu button
-                        shown below. This sidebar will have buttons corresponding to all of the trees you have created
-                        and have access to. It also contains the options to logout, create a new tree, and view this
-                        quickstart guide.</li>
+                    <li><strong>Tree View</strong>: The Tree View is the main focus of the Treelo page. It displays each
+                        tree you have created one tree at a time.&nbsp; <img src="images/TreeView.png"
+                            alt="The Tree View Side Navigation Bar" width="100%" /> Clicking a node within a tree can
+                        expand or collapse a tree accordingly. Right clicking a node opens context menu for node
+                        actions.</li>
+                    <li><strong>Tree Navigation Sidebar</strong>: The Navigation Sidebar can be opened by clicking the
+                        Treelo Menu button shown below. This sidebar will have buttons corresponding to all of the trees
+                        you have created and have access to. It also contains the options to logout, create a new tree,
+                        and view this quickstart guide.</li>
+                    <ul style="list-style-type: square;">
+                        <li>Views of available trees
+                            <ul style="list-style-type: square;">
+                                <li>Upon clicking these buttons the tree corresponding to each button will be displayed
+                                    within the Tree View.</li>
+                            </ul>
+                        </li>
+                        <li>The Create New Tree button
+                            <ul style="list-style-type: square;">
+                                <li>Upon clicking this button, a new menu will appear where you can enter root node
+                                    information for your tree as shown below.</li>
+                                <li>Upon hitting submit the new tree will be created, or simply hit cancel to exit the
+                                    new tree input menu and cancel creating a new tree.</li>
+                            </ul>
+                        </li>
+                        <li>Logout<br />
+                            <ul style="list-style-type: square;">
+                                <li>This button simply logs you out of your account and redirects you back to the login
+                                    page.</li>
+                            </ul>
+                        </li>
+                        <li>Need Help Button:&nbsp;
+                            <ul style="list-style-type: square;">
+                                <li>This button takes you to the QuickStart guide you are currently viewing.</li>
+                            </ul>
+                        </li>
+                    </ul>
                     <li>Members Sidebar: The members sidebar contains all of the shared views for the current tree that
                         you are viewing. Simply put, this means that when you share any portion of a tree with an
                         individual, a button will appear here which, when clicked, will show you what view the person
-                        that you shared with can see.&nbsp;</li>
+                        that you shared with can see.&nbsp;
+                        <ul style="list-style-type: square;">
+                            <li>Upon clicking these buttons the view that each individual will see is displayed in the
+                                Tree View. This action then displays a return from focus button that will exit the share
+                                view and return to the full tree view within the Tree View.</li>
+                        </ul>
+                    </li>
                     <li>The Context Menu is not present until a node within a tree is right-clicked. This action opens
                         the menu and from there there are many options. These include adding a card, deleting a card,
-                        sharing a tree, and setting a card as the focus node.&nbsp;</li>
+                        sharing a tree, and setting a card as the focus node.&nbsp;
+                        <ul style="list-style-type: square;">
+                            <li>Add Card
+                                <ul style="list-style-type: square;">
+                                    <li>Upon clicking this button a new node will appear as a child of the node you
+                                        selected and will be filled with default information.</li>
+                                </ul>
+                            </li>
+                            <li>Delete Card
+                                <ul style="list-style-type: square;">
+                                    <li>There are two different actions with this button. If the node that is selected
+                                        is not the root, top of the tree, then the node is simply removed from the
+                                        current tree that is being viewed. However, if the node selected is the root,
+                                        then the entire tree will be deleted (this includes all references to any child
+                                        nodes)</li>
+                                </ul>
+                            </li>
+                            <li>SHARE
+                                <ul style="list-style-type: square;">
+                                    <li>Upon clicking this button a new popup will appear prompting you to enter an
+                                        email associated with an email. This will share the tree from the current node
+                                        down with the user that is associaed with that email.&nbsp;</li>
+                                </ul>
+                            </li>
+                            <li>Set as Focus
+                                <ul style="list-style-type: square;">
+                                    <li>Clicking this button will set the current node as the temporary root the tree.
+                                        This allows for a larger view of a small portion of the tree. Clicking this will
+                                        also cause a new button to appear within the context menu. This return from
+                                        focus button will revert the tree within the tree view to the original full tree
+                                        removing the current node as the temporary root.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
         </ul>
     </li>
-    <li>Functionaility:
+    <li>Tree Functionaility:
         <ul style="list-style-type: disc;">
             <li>Creating your first tree:
                 <ul style="list-style-type: square;">
@@ -99,10 +168,28 @@
                             </li>
                             <li>Removing shared users:
                                 <ul style="list-style-type: square;">
-                                    <li>To remove shared users simply find the&nbsp;<strong>Members tab within
-                                            the&nbsp;</strong></li>
+                                    <li>To remove shared users simply find the&nbsp;<strong>Members</strong>&nbsp;tab
+                                        within the card information modal and click the 'x' next to the user's email in
+                                        which you want to remove. This will close the modal and unshare
+                                        the<strong>&nbsp;</strong>tree with that user.&nbsp;</li>
                                 </ul>
                             </li>
+                            <li>Updating the card complete status:
+                                <ul style="list-style-type: square;">
+                                    <li>To update the card status to complete simply press the Mark Complete button. To
+                                        revert it back to incomplete click the newly created Mark Incomplete
+                                        button.&nbsp;</li>
+                                </ul>
+                            </li>
+                            <li>To update the card's due date simply enter a time within the Due Date seciton of the
+                                modal. Make sure to completely enter a dat, and time with PM or AM in the last section
+                                in order for the due date to be saved.&nbsp;</li>
+                        </ul>
+                    </li>
+                    <li>Viewing a Card Preview:
+                        <ul style="list-style-type: square;">
+                            <li>To view a card preview simply hover over a node within the tree and a popup will appear
+                                displaying the card's description and due date.</li>
                         </ul>
                     </li>
                 </ul>
