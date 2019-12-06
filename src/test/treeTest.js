@@ -4,6 +4,7 @@ var request = require('supertest');
 var expect = chai.expect;
 Node = require('../models/nodeModel');
 
+//Mock user data
 const test_user = {
     _raw: 'raw',
     _json: '{}',
@@ -13,11 +14,13 @@ const test_user = {
     id: 'test|5dcf7e98bfb28c0ecba5c9f2'
 };
 
+// Key values that belong to all nodes
 const node_keys = [
     'sharedUsers', 'children', '_id', 'dueDate', 'title',
     'description', 'ownerId', 'ownerEmail', 'isComplete', 'isOverdue'
 ];
 
+// Mock root node
 const test_root = {
     "tree": {
         title: "TEST TITLE",
@@ -33,6 +36,7 @@ const test_root = {
     }
 }
 
+// Mock child node
 const test_child = {
     "tree": {
         title: "Child",
@@ -48,39 +52,28 @@ const test_child = {
     }
 }
 
-var saveRoot = (tree) => {
-    var treeId;
-    var newTree = new Node();
-    newTree.title = tree.title;
-    newTree.description = tree.description;
-    newTree.dueDate = tree.dueDate ? tree.dueDate : new Date();
-    newTree.ownerId = test_user.id;
-    newTree.ownerEmail = test_user.emails[0].value;
-    newTree.sharedUsers = tree.sharedUsers;
-    newTree.isComplete = tree.isComplete;
-    newTree.isOverdue = tree.isOverdue ? tree.isOverdue : false;
-    newTree.children = tree.children;
-    newTree.save((err) => {
-        console.log('created: ' + newTree._id);
-        treeId = newTree._id;
-    });
-    return treeId;
-};
-
-// beforeEach((done) => {
-//     //Empty database
-//     Node.deleteMany({}, (err) => {
-//         done();
-//     });  
-// });
-
 var tempTreeId;
-describe('Node creation', () => {
+
+/*
+*   Test the GET / endpoint
+*/
+describe('GET /', () => {    
+    it('responds with treeView html page', 
+        () => {
+            return request(app)
+                .get('/trees')
+                .expect(200)
+                .expect('Content-Type', 'text/html; charset=UTF-8')
+        }
+    ); 
+});
+
+describe('Node Creation', () => {
     /*
-    * Test the POST /newTree route
+    * Test the POST /newTree route for valid root
     */
     describe('POST /newTree', () => {
-        it('creates a new tree', () => {
+        it('Creates a new tree', () => {
             return request(app)
                 .post('/trees/newTree')
                 .send(test_root)
@@ -104,13 +97,33 @@ describe('Node creation', () => {
                         expect(newRoot.key).to.deep.equal(test_root.tree.key);
                     });
                 });          
-            });
+            }
+        );
+
+        /*
+        * Test the POST /newTree route for invalid root
+        */
+        it('creates a new tree', () => {
+            return request(app)
+                .post('/trees/newTree')
+                .send({})
+                .expect(400)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect((res) => {
+                    expect(res.body.message).to.equal('No node sent with request');
+                });          
+            }
+        );
     });
     
     /*
-    *   Test the POST /addNode/:nodeId endpoint
+    *   Test the POST /addNode/:parentId endpoint
     */
-    describe('POST /addNode/:nodeId', () => {
+    describe('POST /addNode/:parentId', () => {
+        
+        /**
+         * Test adding a valid node on an existing node
+         */
         it('Adds a new node to the parent with id = nodeId', () => {
             return request(app)
                 .post('/trees/addNode/' + tempTreeId)
@@ -143,85 +156,63 @@ describe('Node creation', () => {
                         });
                     });
                 });          
-        });
+            }
+        );
+
+        /**
+         * Test adding an invalid node on an existing node
+         */
+        it('Adds a new node to the parent with id = nodeId', () => {
+            return request(app)
+                .post('/trees/addNode/' + tempTreeId)
+                .send({})
+                .expect(400)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect((res) => {
+                    expect(res.body.message).to.equal('No node sent with request');
+                });          
+            }
+        );
+
+        /**
+         * Test adding a node on a not existing node
+         */
+        it('Adds a new node to the parent with id = nodeId', () => {
+            return request(app)
+                .post('/trees/addNode/1234')
+                .send(test_child)
+                .expect(400)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect((res) => {
+                    expect(res.body.message).to.equal('Error');
+                    expect(res.body.data.message).to.equal(`Cast to ObjectId failed for value "1234" at path "_id" for model "Node"`);
+                });          
+            }
+        );
     });
-});
-
-/*
-*   Test the GET / endpoint
-*/
-describe('GET /', () => {    
-    it('responds with treeView html page', 
-        () => {
-            return request(app)
-                .get('/trees')
-                .expect(200)
-                .expect('Content-Type', 'text/html; charset=UTF-8')
-        }
-    ); 
-});
-
-/*
-*   Test the GET /data endpoint
-*/
-describe('GET /data', () => {
-    it("responds with all of a user's trees", 
-        () => {
-            return request(app)
-                .get('/trees/data')
-                .set('Accept', 'application/json')
-                .expect(200)
-                .expect('Content-Type', 'application/json; charset=utf-8')
-                .expect((res) => {
-                    console.log(res.body);
-                    expect(res.body.data)
-                        .to.be.an.instanceOf(Array)
-                        .and.to.have.property(0)
-                        .that.includes.all.keys(node_keys);
-                });           
-        });
-});
-
-/*
-*   Test GET the /:nodeId endpoint 
-*/
-describe('GET /:nodeId', () => {
-    it("responds with tree with Id = nodeId", 
-        () => {
-            return request(app)
-                .get('/trees/' + tempTreeId)
-                .set('Accept', 'application/json')
-                .expect(200)
-                .expect('Content-Type', 'application/json; charset=utf-8')
-                .expect((res) => {
-                    expect(res.body.data).includes.all.keys(node_keys);
-                });           
-        }
-    );
 });
 
 
 /*
 *   Test the PUT /details/:nodeId endpoint
 */
-//Test nodeId doesn't exist
 describe('Test PUT /details/:nodeId', () => {
-    it('updates the data stored in the node with id = nodeId',
-        () => {
-            var updated_node = {
-                node: {
-                    title: "Updated title",
-                    description: "updated description",
-                    dueDate: "",
-                    sharedUsers: [
-                        "benbaierl@case.edu"
-                    ],
-                    isComplete: true,
-                    isOverdue: true,
-                    children: []
-                }
-            }
+    var updated_node = {
+        node: {
+            title: "Updated title",
+            description: "updated description",
+            dueDate: "",
+            sharedUsers: [
+                "benbaierl@case.edu"
+            ],
+            isComplete: true,
+            isOverdue: true,
+            children: []
+        }
+    }
 
+    it('Updates the data stored in the node with id = nodeId',
+        () => {
             return request(app)
                 .put('/trees/details/' + tempTreeId)
                 .send(updated_node)
@@ -235,14 +226,114 @@ describe('Test PUT /details/:nodeId', () => {
                         expect(node.key).to.equal(updated_node.key);
                     });
                 });      
-        });
+        }
+    );
+
+    it('Returns that the node does not exist and returns a cast error',
+        () => {
+            return request(app)
+                .put('/trees/details/1234')
+                .send(updated_node)
+                .set('Accept', 'application/json')
+                .expect(400)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect((res) => {
+                    expect(res.body.message).to.equal('Error');
+                    expect(res.body.data.message).to.equal(`Cast to ObjectId failed for value "1234" at path "_id" for model "Node"`);
+                });      
+        }
+    );
+
+    it('Returns that no node was sent with the request',
+        () => {
+            return request(app)
+                .put('/trees/details/' + tempTreeId)
+                .send({})
+                .set('Accept', 'application/json')
+                .expect(400)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect((res) => {
+                    expect(res.body.message).to.equal('No node sent with request')
+                });      
+        }
+    );
+});
+
+
+/*
+*   Test the GET /data endpoint
+*/
+describe('GET /data', () => {
+    it("responds with all of a user's trees", 
+        () => {
+            return request(app)
+                .get('/trees/data')
+                .set('Accept', 'application/json')
+                .expect(200)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect((res) => {
+                    expect(res.body.data)
+                        .to.be.an.instanceOf(Array)
+                        .and.to.have.length(1)
+                        .and.to.have.property(0)
+                        .that.includes.all.keys(node_keys);
+                    Object.keys(res.body.data[0]).forEach((key) => {
+                        expect(res.body.data[0].key).to.deep.equal(test_root.tree.key);
+                    });
+                });           
+        }
+    );
+});
+
+
+/*
+*   Test GET the /:nodeId endpoint 
+*/
+describe('GET /:nodeId', () => {
+
+    /**
+     * Test retrieve valid nodeId
+     */
+    it("responds with tree with Id = nodeId", 
+        () => {
+            return request(app)
+                .get('/trees/' + tempTreeId)
+                .set('Accept', 'application/json')
+                .expect(200)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect((res) => {
+                    expect(res.body.data).includes.all.keys(node_keys);
+                });           
+        }
+    );
+
+    /**
+     * Test retrieve invalid nodeId
+     */
+    it("responds with tree with Id = nodeId", 
+        () => {
+            return request(app)
+                .get('/trees/1234')
+                .set('Accept', 'application/json')
+                .expect(400)
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect((res) => {
+                    expect(res.body.message).to.equal('Error');
+                    expect(res.body.data.message).to.equal(`Cast to ObjectId failed for value "1234" at path "_id" for model "Node"`);
+                });           
+        }
+    );
 });
 
 /*
 *   Test the DELETE /:nodeId endpoint
 */
 describe('Test delete /:nodeId', () => {
-    it('deletes the node and all children from the database',
+
+    /**
+     * Test delete for valid nodeId
+     */
+    it('Deletes the node and all children from the database',
         () => {
             return request(app)
                 .delete('/trees/' + tempTreeId)
@@ -250,5 +341,20 @@ describe('Test delete /:nodeId', () => {
                 .expect((res) => {
                     expect(res.body.message).to.be.equal('Node ' + tempTreeId + ' deleted');
                 });
-        });
+        }
+    );
+
+    /**
+     * Test delete for invalid nodeId
+     */
+    it("Returns that the node doesn't exist",
+        () => {
+            return request(app)
+                .delete('/trees/' + tempTreeId)
+                .expect(400)
+                .expect((res) => {
+                    expect(res.body.message).to.be.equal('No Node with id ' + tempTreeId + ' found');
+                });
+        }
+    );
 });

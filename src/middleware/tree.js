@@ -55,7 +55,7 @@ router.get('/user',
     secure.secured, 
     (req, res) => {
         var user = getUserProfile(req);
-        res.json({
+        res.status(200).json({
             userProfile: user
         });
 });
@@ -82,34 +82,45 @@ router.post('/newTree',
         var user = getUserProfile(req);
         var reqNode = req.body.tree;
 
-        console.log('Request made to save tree: ' + reqNode.title + ' for user: ' + user.emails[0]);
+        if(reqNode != null) {
 
-        //Save request as instance of Node Schema
-        var newNode = new NodeModel();  
-        newNode.root = true;
-        newNode.title = reqNode.title;
-        newNode.description = reqNode.description;
-        newNode.dueDate = reqNode.dueDate;
-        newNode.ownerId = user.id;
-        newNode.ownerEmail = user.emails[0];
-        newNode.sharedUsers = reqNode.sharedUsers ? reqNode.sharedUsers : [];
-        newNode.isComplete = reqNode.isComplete;
-        newNode.isOverdue = reqNode.isOverdue ? reqNode.isOverdue : false;
-        newNode.children = [];      
+            console.log('Request made to save tree: ' + reqNode.title + ' for user: ' + user.emails[0]);
 
-        newNode.save((err, savedTree) => {
-            if (err){
-                console.log(err);
-                res.status(400);
-            }
-            else {
-                console.log('Saved tree: ' + reqNode.title + ' for user: ' + user.emails[0]);
-                res.status(201).json({
-                    message: 'New tree created',
-                    data: savedTree
-                });
-            }
-        });
+            //Save request as instance of Node Schema
+            var newNode = new NodeModel();  
+            newNode.root = true;
+            newNode.title = reqNode.title;
+            newNode.description = reqNode.description;
+            newNode.dueDate = reqNode.dueDate;
+            newNode.ownerId = user.id;
+            newNode.ownerEmail = user.emails[0];
+            newNode.sharedUsers = reqNode.sharedUsers ? reqNode.sharedUsers : [];
+            newNode.isComplete = reqNode.isComplete;
+            newNode.isOverdue = reqNode.isOverdue ? reqNode.isOverdue : false;
+            newNode.children = [];      
+
+            newNode.save((err, savedTree) => {
+                if (err){
+                    console.log(err);
+                    res.status(400).json({
+                        message: 'Error',
+                        data: err
+                    });
+                }
+                else {
+                    console.log('Saved tree: ' + reqNode.title + ' for user: ' + user.emails[0]);
+                    res.status(201).json({
+                        message: 'New tree created',
+                        data: savedTree
+                    });
+                }
+            });
+        }
+        else {
+            res.status(400).json({
+                message: 'No node sent with request'
+            });
+        }
     }
 );
 
@@ -124,53 +135,66 @@ router.post('/addNode/:parentId',
         var reqNode = req.body.tree;
         var parentId = req.params.parentId.toString();
 
-        console.log('Saving node: ' + reqNode.title + ' to parent: ' + parentId + ' for user: ' + user.emails[0]);
-        
-        //Save request as instance of Node Schema
-        var newNode = new NodeModel();  
-        newNode.root = false;
-        newNode.title = reqNode.title;
-        newNode.description = reqNode.description;
-        newNode.dueDate = reqNode.dueDate 
-        newNode.ownerId = user.id;
-        newNode.ownerEmail = user.emails[0];
-        newNode.sharedUsers = reqNode.sharedUsers;
-        newNode.isComplete = reqNode.isComplete;
-        newNode.isOverdue = reqNode.isOverdue ? reqNode.isOverdue : false;
-        newNode.children = [];      
+        if(reqNode != null) {
+            console.log('Saving node: ' + reqNode.title + ' to parent: ' + parentId + ' for user: ' + user.emails[0]);
+            
+            //Save request as instance of Node Schema
+            var newNode = new NodeModel();  
+            newNode.root = false;
+            newNode.title = reqNode.title;
+            newNode.description = reqNode.description;
+            newNode.dueDate = reqNode.dueDate 
+            newNode.ownerId = user.id;
+            newNode.ownerEmail = user.emails[0];
+            newNode.sharedUsers = reqNode.sharedUsers;
+            newNode.isComplete = reqNode.isComplete;
+            newNode.isOverdue = reqNode.isOverdue ? reqNode.isOverdue : false;
+            newNode.children = [];      
 
-        // Save the node to the database
-        newNode.save((err, savedNode) => {
-            if (err){
-                console.log(err);
-                res.status(400);
-            }
-            else {
-                // Find the parent and add the new node's
-                // id to the parent's list of children
-                var query = { $push: {"children": savedNode._id}};
-                var options = {  safe: true, upsert: true};
+            // Save the node to the database
+            newNode.save((err, savedNode) => {
+                if (err){
+                    console.log(err);
+                    res.status(400).json({
+                        message: 'Error',
+                        data: err
+                    });
+                }
+                else {
+                    // Find the parent and add the new node's
+                    // id to the parent's list of children
+                    var query = { $push: {"children": savedNode._id}};
+                    var options = {  safe: true, upsert: true};
 
-                NodeModel.findByIdAndUpdate(
-                    parentId, 
-                    query, 
-                    options, 
-                    (err, parent) => {
-                        if(err){
-                            console.log(err);
-                            res.status(400);
+                    NodeModel.findByIdAndUpdate(
+                        parentId, 
+                        query, 
+                        options, 
+                        (err, parent) => {
+                            if(err){
+                                console.log(err);
+                                res.status(400).json({
+                                    message: 'Error',
+                                    data: err
+                                });
+                            }
+                            else {
+                                console.log('Saved node: ' + reqNode.title + ' to parent: ' + parentId + ' for user: ' + user.emails[0])
+                                res.status(201).json({
+                                    message: 'New node added',
+                                    data: savedNode
+                                });
+                            }
                         }
-                        else {
-                            console.log('Saved node: ' + reqNode.title + ' to parent: ' + parentId + ' for user: ' + user.emails[0])
-                            res.status(201).json({
-                                message: 'New node added',
-                                data: savedNode
-                            });
-                        }
-                    }
-                );
-            }
-        });
+                    );
+                }
+            });
+        }
+        else {
+            res.status(400).json({
+                message: 'No node sent with request'
+            });
+        }
     }
 )
 
@@ -183,30 +207,40 @@ router.put('/details/:nodeId',
     (req, res) => {
         console.log('Updating node: ' + req.params.nodeId);
 
-        // Ensure that if shared users is empty, mongoose updates
-        // the database accordingly
-        if(!req.body.node.hasOwnProperty("sharedUsers")){
-            req.body.node.sharedUsers = undefined;
-        }
-
-        // Find the node and update
-        NodeModel.findByIdAndUpdate (
-            req.params.nodeId,
-            req.body.node,
-            (err, node) => {
-                if(err) {
-                    console.log(err);
-                    res.status(400).send();
-                }
-                else {
-                    console.log('Updated node: ' + req.params.nodeId);
-                    res.status(200).json({
-                        message: 'Update successful',
-                        data: node
-                    });
-                }
+        if(req.body.node != null) {
+            // Ensure that if shared users is empty, mongoose updates
+            // the database accordingly
+            if(!req.body.node.hasOwnProperty("sharedUsers")){
+                req.body.node.sharedUsers = undefined;
             }
-        )
+
+            // Find the node and update
+            NodeModel.findByIdAndUpdate (
+                req.params.nodeId,
+                req.body.node,
+                (err, node) => {
+                    if(err) {
+                        console.log(err);
+                        res.status(400).json({
+                            message: 'Error',
+                            data: err
+                        });
+                    }
+                    else {
+                        console.log('Updated node: ' + req.params.nodeId);
+                        res.status(200).json({
+                            message: 'Update successful',
+                            data: node
+                        });
+                    }
+                }
+            )
+        }
+        else {
+            res.status(400).json({
+                message: 'No node sent with request'
+            });
+        }
     }
 )
 
@@ -231,8 +265,8 @@ router.get('/data',
                 if(err) {
                     console.log(err);
                     res.status(400).json({
-                        status: 'error',
-                        message: err,
+                        message: 'Error',
+                        data: err
                     });
                 }
                 else {
@@ -267,23 +301,16 @@ router.get('/:nodeId',
             if(err) {
                 console.log(err);
                 res.status(400).json({
-                    status: 'error',
-                    message: err,
+                    message: 'Error',
+                    data: err
                 });
             }
-            else if(tree != null) {
+            else {
                 console.log('Node with id: ' + req.params.nodeId + ' found');
                 res.status(200).json({
                     status: 'success',
                     message: 'tree retrieved successfully',
                     data: tree
-                });
-            }
-            else {
-                console.log('No tree with id: ' + req.params.nodeId + ' found');
-                res.status(200).json({
-                    status: 'failure',
-                    message: 'No tree with id: ' + req.params.nodeId + ' found'
                 });
             }
         });
@@ -307,19 +334,24 @@ router.delete('/:nodeId',
         (err, node) => {
             if (err) {
                 console.log(err);
-                res.status(400).send(err);
+                res.status(400).json({
+                    data: err
+                });
             }
             //If the number deleted and number OK > 0
-            else if(node.n != 0 && node.deleted != 0) {
+            else if(node != null && node.n != 0 && node.deleted != 0) {
                 console.log('Node ' + req.params.nodeId + ' deleted');
+
                 res.status(200).json({
-                    status: "success",
+                    status: "Success",
                     message: 'Node ' + req.params.nodeId + ' deleted'
                 });
             }
             else {
                 console.log('No Node with id ' + req.params.nodeId + ' found');
+
                 res.status(400).json({
+                    status: 'Failure',
                     message: 'No Node with id ' + req.params.nodeId + ' found'
                 }); 
             }
