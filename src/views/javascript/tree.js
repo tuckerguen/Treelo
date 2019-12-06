@@ -391,7 +391,12 @@ function makeNewData() {
                 "tree" : newTree
             },
             success: function(body){
-                treeData.push([body.data]);
+                if(treeData == null){
+                    treeData.push([body.data]);
+                }
+                else {
+                    treeData.push(body.data);
+                }
                 displayTree(body.data, false);
                 document.getElementById("sideNavButtons").innerHTML += "<button id = " + '"' + body.data._id + '"' + "onClick = findTree()>" + body.data.title + "</button>";
                 closeNewTreePopup();
