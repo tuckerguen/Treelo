@@ -171,7 +171,7 @@ function findMatchingID(item) {
 
 // Makes and Displays the Buttons corresponding to each tree a user can view
 function makeTreeButtons(item, index) {
-    document.getElementById("sideNavButtons").innerHTML += "<br><button id = " + '"' + item._id + '"' + "onClick = findTree()>" + item.title + "</button>";
+    document.getElementById("sideNavButtons").innerHTML += "<button id = " + '"' + item._id + '"' + "onClick = findTree()>" + item.title + "</button>";
 }
 
 // Displays a tree from a certain point.
@@ -393,7 +393,7 @@ function makeNewData() {
             success: function(body){
                 treeData.push([body.data]);
                 displayTree(body.data, false);
-                document.getElementById("mySidenav").innerHTML += "<br><button id = " + '"' + body.data._id + '"' + "onClick = findTree()>" + body.data.title + "</button>";
+                document.getElementById("sideNavButtons").innerHTML += "<button id = " + '"' + body.data._id + '"' + "onClick = findTree()>" + body.data.title + "</button>";
                 closeNewTreePopup();
             },
             error: function(xhr, err){
@@ -406,7 +406,7 @@ function makeNewData() {
 // Removes a node from the current viewed tree
 function removeNode(d) {
     if (currentNode.parent == null) {
-        $("#" + currentNode._id).hide();
+        $("#" + currentNode._id).remove();
         deleteTree()
     }
     else {

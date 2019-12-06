@@ -12,9 +12,20 @@
     overflow-y: hidden;
 }
 
+/* The Styling for the Submit Button Within the Share Tree Popup */
+#submit{
+    border-radius: 10px;
+    position: relative;
+}
+
 /* The Hover Acion for Submitting a User to Share a Tree With */
 #submit:hover{
     background-color: lightgreen;
+    outline: white;
+    cursor: pointer;
+    border-left: 4px solid black;
+    border-right: 4px solid black;
+    border-radius: 10px;
 }
 
 /* The Hover Action for Canceling Creating a New Tree or Sharing a Tree */
@@ -145,7 +156,7 @@ svg text{
     height:80%;
     display:inline-block;
     width: 100%;
-    margin-top: 25px;
+    margin-top: 40px;
     margin-left: 25px;
 }
 
@@ -350,10 +361,10 @@ svg text{
     display: none;
     position: absolute;
     top: 85px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 45%;
+    margin-right: 20%;
     width: 50%;
-    height: 16%;
+    height: 169px;
     border-radius: 25px;
     box-shadow: 0 0 5px black;
     text-align: center;
@@ -372,6 +383,11 @@ svg text{
 #description{
     width: 500px;
     border-radius: 5px;
+    border-color: rgb(0, 113, 179);
+}
+
+/* Styling for the User Email Input */
+#shared-with {
     border-color: rgb(0, 113, 179);
 }
 
@@ -399,26 +415,12 @@ svg text{
     right: 0;
     border-radius:0px 0px 0px 25px;
     border: 0px solid black;
-    background-color:  white;
+    background-color:  rgb(37, 65, 82);
     overflow-x: hidden;
     overflow-y: auto;
     transition: 0.5s;
     padding-top: 60px;
     box-shadow: 0px 0px 10px  rgb(87, 87, 87);
-
-    /*BEN*/
-    /* height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0px;
-    right: 0;
-    background-color: rgb(0, 113, 179);
-    overflow-x: hidden;
-    overflow-y: auto;
-    transition: 0.5s;
-    padding-top: 60px;
-    box-shadow: 0 0 10px black; */
 }
 
 /* Styling for the Trees Sharing Navigation Bar Close Button */
@@ -434,7 +436,7 @@ svg text{
 
 /* The ACtion Styling for the Close Button of the Trees Shared Side Navigation */
 .sideshare a:hover {
-    color: #f1f1f1;
+    color: #999999;
 }
 
 /* More Styling for the Close Button for the Trees Shared Side Navigation */
@@ -444,16 +446,11 @@ svg text{
     left: 25px;
     font-size: 36px;
     margin-right: 50px;
-    color: rgb(0, 113, 179); 
+    color: white; 
 }
 
 /* Styling for Each Button Within the Trees Shared Side Navigation Bar */
 .sideshare button{
-    /* display: inline-block;
-    width: 200px;
-    color: black;
-    background-color: white;
-    border-radius: 10%; */
     width:200px;
     border-radius: 10px;
     background-color: white;
@@ -472,7 +469,7 @@ svg text{
 /* The Styling for the Button to Create a New Tree */
 #create-button{
     position: absolute;
-    top: 10%;
+    top: 12%;
     left: 25px;
 }
 
