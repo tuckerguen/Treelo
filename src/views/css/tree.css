@@ -145,6 +145,8 @@ svg text{
     height:80%;
     display:inline-block;
     width: 100%;
+    margin-top: 25px;
+    margin-left: 25px;
 }
 
 /* The Styling for the Modal Representing Card Information */
